@@ -1,0 +1,119 @@
+const express = require('express');
+const fs = require('fs').promises;
+const path = require('path');
+const cors = require('cors');
+
+const app = express();
+const PORT = process.env.PORT || 3001;
+const isProduction = process.env.NODE_ENV === 'production';
+
+// Configure CORS
+app.use(cors({
+  origin: isProduction ? false : ['http://localhost:5173', 'http://localhost:3000'],
+  methods: ['GET', 'POST', 'DELETE'],
+  credentials: true
+}));
+
+// Parse JSON bodies
+app.use(express.json());
+
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error('Server error:', err);
+  res.status(500).json({ error: 'Internal server error' });
+});
+
+// Path to leaderboard data file
+const LEADERBOARD_FILE = path.join(__dirname, 'src', 'leaderboardData.json');
+
+// GET endpoint to retrieve leaderboard data
+app.get('/api/leaderboard', async (req, res) => {
+  try {
+    const data = await fs.readFile(LEADERBOARD_FILE, 'utf8');
+    const leaderboard = JSON.parse(data);
+    res.json(leaderboard);
+  } catch (error) {
+    console.error('Error reading leaderboard:', error);
+    res.status(500).json({ error: 'Failed to read leaderboard data' });
+  }
+});
+
+// Initialize leaderboard file if it doesn't exist
+const initializeLeaderboard = async () => {
+  try {
+    await fs.access(LEADERBOARD_FILE);
+  } catch (error) {
+    // File doesn't exist, create it with initial structure
+    await fs.writeFile(LEADERBOARD_FILE, JSON.stringify({ leaderboard: [] }, null, 2));
+  }
+};
+
+// Initialize on startup
+initializeLeaderboard().catch(console.error);
+
+// POST endpoint to add new entry to leaderboard
+app.post('/api/leaderboard', async (req, res) => {
+  try {
+    // Ensure required fields are present
+    const { name, mode, prompt, timestamp } = req.body;
+    if (!name || !mode || !prompt || !timestamp) {
+      return res.status(400).json({ error: 'Missing required fields' });
+    }
+
+    let leaderboard;
+    try {
+      const data = await fs.readFile(LEADERBOARD_FILE, 'utf8');
+      leaderboard = JSON.parse(data);
+    } catch (error) {
+      // If file doesn't exist or is corrupted, create new structure
+      leaderboard = { leaderboard: [] };
+    }
+    
+    leaderboard.leaderboard.push(req.body);
+    
+    await fs.writeFile(LEADERBOARD_FILE, JSON.stringify(leaderboard, null, 2));
+    res.status(201).json({ message: 'Entry added successfully' });
+  } catch (error) {
+    console.error('Error updating leaderboard:', error);
+    res.status(500).json({ error: 'Failed to update leaderboard' });
+  }
+});
+
+// DELETE endpoint to clear leaderboard with password protection
+app.delete('/api/leaderboard', async (req, res) => {
+  try {
+    const { password } = req.body;
+    
+    // Check password (in production, use environment variable)
+    const ADMIN_PASSWORD = 'tech-meet-2025'; // In production, use process.env.ADMIN_PASSWORD
+    
+    if (password !== ADMIN_PASSWORD) {
+      return res.status(401).json({ error: 'Invalid password' });
+    }
+
+    // Reset leaderboard to empty array
+    await fs.writeFile(LEADERBOARD_FILE, JSON.stringify({ leaderboard: [] }, null, 2));
+    res.json({ message: 'Leaderboard cleared successfully' });
+  } catch (error) {
+    console.error('Error clearing leaderboard:', error);
+    res.status(500).json({ error: 'Failed to clear leaderboard' });
+  }
+});
+
+// Serve static files in production
+if (isProduction) {
+  // Serve static files from the dist directory
+  app.use(express.static(path.join(__dirname, 'dist')));
+
+  // Handle client-side routing by serving index.html for all non-API routes
+  app.get('*', (req, res) => {
+    if (!req.path.startsWith('/api')) {
+      res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    }
+  });
+}
+
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+  console.log(`Mode: ${isProduction ? 'production' : 'development'}`);
+});

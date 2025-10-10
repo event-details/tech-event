@@ -1,0 +1,31 @@
+{
+  "eventData": {
+    "title": "Tech Meet 2025",
+    "subtitle": "Exploring the Future of Technology",
+    "date": "October 15, 2025",
+    "venue": "Silicon Valley Convention Center",
+    "rows": [
+      {
+        "time": "9:00 AM",
+        "session": "Opening Keynote",
+        "speaker": "Jane Smith",
+        "track": "Main Stage",
+        "description": "Welcome and future tech trends"
+      },
+      {
+        "time": "10:30 AM",
+        "session": "AI in Enterprise",
+        "speaker": "John Doe",
+        "track": "Tech Track",
+        "description": "Implementing AI solutions in enterprise environments"
+      },
+      {
+        "time": "12:00 PM",
+        "session": "Lunch Break",
+        "speaker": "-",
+        "track": "All Tracks",
+        "description": "Networking and refreshments"
+      }
+    ]
+  }
+}
