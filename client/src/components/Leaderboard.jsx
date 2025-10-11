@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Dialog, Transition } from '@headlessui/react';
 import { toast, Toaster } from 'react-hot-toast';
 import { XMarkIcon, TrashIcon, ShieldExclamationIcon } from '@heroicons/react/24/outline';
+import AdminLogout from './AdminLogout';
 
 function Leaderboard() {
   const [leaderboardData, setLeaderboardData] = useState([]);
@@ -109,12 +110,17 @@ function Leaderboard() {
   );
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-[#8f5a39]/10 to-transparent flex flex-col">
+    <div className="bg-gradient-to-b from-[#8f5a39]/10 to-transparent flex flex-col min-h-full">
       <div className="flex-grow container mx-auto px-4 py-12 flex flex-col">
         {/* Header Section */}
-        <div className="max-w-7xl mx-auto text-center mb-12 w-full">
-          <h1 className="text-4xl font-bold text-[#8f5a39] mb-4">Bot Breakers Leaderboard</h1>
-          <p className="text-gray-600 text-lg mb-2">Celebrating our most innovative AI challengers</p>
+        <div className="max-w-7xl mx-auto mb-12 w-full relative">
+          <div className="text-center">
+            <h1 className="text-4xl font-bold text-[#8f5a39] mb-4">Bot Breakers Leaderboard</h1>
+            <p className="text-gray-600 text-lg mb-2">Celebrating our most innovative AI challengers</p>
+          </div>
+          <div className="absolute top-0 right-0">
+            <AdminLogout />
+          </div>
         </div>
 
       {/* Clear Leaderboard Modal */}

@@ -9,7 +9,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 // Configure CORS
 app.use(cors({
-  origin: isProduction ? true : ['http://localhost:5173', 'http://localhost:3000'],
+  origin: isProduction ? true : ['http://localhost:5173', 'http://localhost:5174', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'DELETE'],
   credentials: true
 }));
@@ -37,6 +37,41 @@ app.get('/api/event-data', async (req, res) => {
   } catch (error) {
     console.error('Error reading event data:', error);
     res.status(500).json({ error: 'Failed to read event data' });
+  }
+});
+
+// POST endpoint to update event data
+app.post('/api/event-data', async (req, res) => {
+  try {
+    const { title, subtitle, date, venue, email, feedbackLink, rows } = req.body;
+    
+    // Validate required fields
+    if (!title || !subtitle || !date || !venue || !email || !rows) {
+      return res.status(400).json({ error: 'All fields except feedbackLink are required' });
+    }
+
+    // Validate rows is an array
+    if (!Array.isArray(rows)) {
+      return res.status(400).json({ error: 'Rows must be an array' });
+    }
+
+    const updatedEventData = {
+      eventData: {
+        title,
+        subtitle,
+        date,
+        venue,
+        email,
+        feedbackLink: feedbackLink || '',
+        rows
+      }
+    };
+
+    await fs.writeFile(EVENT_DATA_FILE, JSON.stringify(updatedEventData, null, 2));
+    res.json({ success: true, message: 'Event data updated successfully' });
+  } catch (error) {
+    console.error('Error updating event data:', error);
+    res.status(500).json({ error: 'Failed to update event data' });
   }
 });
 

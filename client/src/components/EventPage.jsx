@@ -38,7 +38,7 @@ function EventPage() {
   if (!eventData) return <div>Loading...</div>;
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
+    <div className="bg-gradient-to-b from-gray-50 to-gray-100 min-h-full">
       <div className="container mx-auto px-4 py-8">
         {/* <div className="flex justify-end mb-4">
           <Link

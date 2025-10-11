@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-hot-toast';
+import AdminLogout from './AdminLogout';
 
 function ChatAnswersForm() {
   const navigate = useNavigate();
@@ -59,17 +60,12 @@ function ChatAnswersForm() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100 py-8">
+    <div className="bg-gradient-to-b from-gray-50 to-gray-100 py-8 min-h-full">
       <div className="max-w-4xl mx-auto px-4">
         <div className="bg-white rounded-lg shadow-lg p-6">
           <div className="flex justify-between items-center mb-6">
             <h1 className="text-2xl font-serif font-bold text-gray-900">Edit Chatbot Responses</h1>
-            <button
-              onClick={() => navigate('/')}
-              className="text-gray-600 hover:text-gray-800"
-            >
-              Back to Event
-            </button>
+            <AdminLogout />
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">

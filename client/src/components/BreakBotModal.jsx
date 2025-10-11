@@ -43,7 +43,8 @@ const BreakBotModal = ({ isOpen, onClose, prompt }) => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to save to leaderboard');
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to save to leaderboard');
       }
 
       setShowConfetti(true);
@@ -59,7 +60,8 @@ const BreakBotModal = ({ isOpen, onClose, prompt }) => {
         },
       });
     } catch (error) {
-      toast.error('Failed to save to leaderboard. Please try again.', {
+      const errorMessage = error.message || 'Failed to save to leaderboard. Please try again.';
+      toast.error(errorMessage, {
         style: {
           border: '1px solid #dc2626',
           padding: '16px',
@@ -74,7 +76,7 @@ const BreakBotModal = ({ isOpen, onClose, prompt }) => {
     setTimeout(() => {
       setShowConfetti(false);
       onClose();
-    }, 3000);
+    }, 1000);
   };
 
   return (
@@ -194,7 +196,7 @@ const BreakBotModal = ({ isOpen, onClose, prompt }) => {
                               htmlFor="mode"
                               className="block text-sm font-medium text-gray-700"
                             >
-                              Preferred Mode
+                              Where are you joining from?
                             </label>
                           </div>
                           <div className="relative mt-1">
@@ -211,7 +213,7 @@ const BreakBotModal = ({ isOpen, onClose, prompt }) => {
                                 paddingRight: '2.5rem'
                               }}
                             >
-                              <option value="" disabled>Select your preferred mode</option>
+                              <option value="" disabled>Are you attending in person or joining over Zoom?</option>
                               <option value="Zoom" className="py-2">Zoom Meeting</option>
                               <option value="In-person" className="py-2">In-person Meeting</option>
                             </Select>

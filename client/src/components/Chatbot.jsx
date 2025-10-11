@@ -100,7 +100,7 @@ function Chatbot() {
       <button
         onClick={() => setIsOpen(true)}
         style={{ backgroundColor: '#8f5a39' }}
-        className="fixed bottom-4 right-4 text-white rounded-full p-4 shadow-lg hover:opacity-90 transition-colors"
+        className="fixed bottom-4 right-4 text-white rounded-full p-4 shadow-xl hover:scale-105 transition-all duration-200"
         aria-label="Open chat"
       >
         <ChatBubbleLeftRightIcon className="h-6 w-6" />
@@ -136,71 +136,92 @@ function Chatbot() {
                 leaveFrom="opacity-100 scale-100"
                 leaveTo="opacity-0 scale-95"
               >
-                <Dialog.Panel className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white p-6 shadow-xl transition-all">
-              <div className="flex justify-between items-center mb-4">
-                <div className="flex items-center gap-4">
-                  <Dialog.Title as="h3" className="text-xl font-medium text-gray-900">
-                    Event Assistant
-                  </Dialog.Title>
-                  {/* <Link
-                    to="/chatanswers"
-                    className="text-sm hover:opacity-80 transition-opacity"
-                    style={{ color: '#8f5a39' }}
-                  >
-                    Edit Responses
-                  </Link> */}
-                </div>
-                <button
-                  onClick={() => setIsOpen(false)}
-                  className="text-gray-400 hover:text-gray-500"
+                <Dialog.Panel 
+                  className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white shadow-xl transition-all"
+                  style={{ border: '1px solid #f4efe7' }}
                 >
-                  <XMarkIcon className="h-6 w-6" />
-                </button>
-              </div>          
-            
-                 {/* Messages container */}
-                  <div className="h-96 overflow-y-auto mb-4 p-4 bg-gray-50 rounded-lg">
-                    {messages.map((message, idx) => (
-                      <div
-                        key={idx}
-                        className={`mb-4 ${
-                          message.isUser ? 'text-right' : 'text-left'
-                        }`}
+                  {/* Header */}
+                  <div 
+                    className="px-6 py-4 border-b"
+                    style={{ borderColor: '#f4efe7' }}
+                  >
+                    <div className="flex justify-between items-center">
+                      <Dialog.Title as="h3" className="text-xl font-semibold text-gray-900">
+                        Event Assistant
+                      </Dialog.Title>
+                      <button
+                        onClick={() => setIsOpen(false)}
+                        className="text-gray-400 hover:text-gray-600 transition-colors p-1 hover:scale-105"
                       >
-                        <div
-                          className={`inline-block p-3 rounded-lg ${
-                            message.isUser
-                              ? 'text-white'
-                              : 'bg-white text-gray-900 shadow'
-                          }`}
-                          style={message.isUser ? { backgroundColor: '#8f5a39' } : undefined}
-                        >
-                          {message.text}
-                        </div>
+                        <XMarkIcon className="h-5 w-5" />
+                      </button>
+                    </div>
+                  </div>          
+            
+                  {/* Messages container */}
+                  <div className="h-80 overflow-y-auto p-6 bg-gradient-to-b from-gray-50 to-gray-100">
+                    {messages.length === 0 ? (
+                      <div className="text-center text-gray-500 mt-8">
+                        <ChatBubbleLeftRightIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
+                        <p className="text-sm">Hi! I'm here to help with any questions about the event.</p>
                       </div>
-                    ))}
+                    ) : (
+                      messages.map((message, idx) => (
+                        <div
+                          key={idx}
+                          className={`mb-4 ${
+                            message.isUser ? 'text-right' : 'text-left'
+                          }`}
+                        >
+                          <div
+                            className={`inline-block px-4 py-3 rounded-xl max-w-xs ${
+                              message.isUser
+                                ? 'text-white shadow-md'
+                                : 'bg-white text-gray-900 shadow-md border'
+                            }`}
+                            style={message.isUser 
+                              ? { backgroundColor: '#8f5a39' } 
+                              : { borderColor: '#f4efe7' }
+                            }
+                          >
+                            {message.text}
+                          </div>
+                        </div>
+                      ))
+                    )}
                     <div ref={messagesEndRef} />
                   </div>
 
                   {/* Input form */}
-                  <form onSubmit={handleSubmit} className="flex gap-2">
-                    <input
-                      type="text"
-                      value={input}
-                      onChange={(e) => setInput(e.target.value)}
-                      placeholder="Type your message..."
-                      className="flex-1 p-2 border rounded-lg focus:outline-none focus:ring-2"
-                      style={{ '--tw-ring-color': '#8f5a39' }}
-                      ref={inputRef}
-                    />
-                    <button
-                      type="submit"
-                      className="px-4 py-2 text-white rounded-lg hover:opacity-90 transition-colors"
-                      style={{ backgroundColor: '#8f5a39' }}
-                    >
-                      Send
-                    </button>
-                  </form>
+                  <div 
+                    className="px-6 py-4 border-t bg-white"
+                    style={{ borderColor: '#f4efe7' }}
+                  >
+                    <form onSubmit={handleSubmit} className="flex gap-3">
+                      <input
+                        type="text"
+                        value={input}
+                        onChange={(e) => setInput(e.target.value)}
+                        placeholder="Type your message..."
+                        className="flex-1 px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:scale-[1.02] text-gray-900 bg-white"
+                        style={{ 
+                          borderColor: '#f4efe7',
+                          focusBorderColor: '#905a39'
+                        }}
+                        onFocus={(e) => e.target.style.borderColor = '#905a39'}
+                        onBlur={(e) => e.target.style.borderColor = '#f4efe7'}
+                        ref={inputRef}
+                      />
+                      <button
+                        type="submit"
+                        disabled={!input.trim()}
+                        className="px-6 py-3 text-sm font-semibold text-white rounded-xl border-2 border-transparent transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                        style={{ backgroundColor: '#8f5a39' }}
+                      >
+                        Send
+                      </button>
+                    </form>
+                  </div>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
