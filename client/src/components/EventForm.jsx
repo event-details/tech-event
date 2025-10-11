@@ -10,7 +10,8 @@ function EventForm() {
     subtitle: '',
     date: '',
     venue: '',
-    rows: ''
+    rows: '',
+    feedbackLink: ''
   });
   const [showRestoreModal, setShowRestoreModal] = useState(false);
 
@@ -20,10 +21,13 @@ function EventForm() {
       const storedData = localStorage.getItem('eventData');
       if (storedData) {
         const parsedData = JSON.parse(storedData);
+        if (data) {
         setFormData({
-          ...parsedData,
-          rows: JSON.stringify(parsedData.rows, null, 2)
+          ...data,
+          rows: JSON.stringify(data.rows, null, 2),
+          feedbackLink: data.feedbackLink || ''
         });
+      }
       } else {
         try {
           const response = await fetch('/api/event-data');
@@ -140,6 +144,20 @@ function EventForm() {
             required
             value={formData.venue}
             onChange={(e) => setFormData({ ...formData, venue: e.target.value })}
+            className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
+          />
+        </div>
+
+        <div>
+          <label htmlFor="feedbackLink" className="block text-sm font-medium text-gray-700">
+            Feedback Link
+          </label>
+          <input
+            type="url"
+            id="feedbackLink"
+            placeholder="https://example.com/feedback"
+            value={formData.feedbackLink}
+            onChange={(e) => setFormData({ ...formData, feedbackLink: e.target.value })}
             className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 sm:text-sm"
           />
         </div>

@@ -22,7 +22,7 @@ const BreakBotModal = ({ isOpen, onClose, prompt }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     // Map fields to backend requirements
-    // Backend expects: name, vulnerability
+    // Backend expects: name, mode, vulnerability (prompt)
     const submission = {
       name,
       mode,

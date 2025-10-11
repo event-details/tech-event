@@ -13,6 +13,42 @@ function Leaderboard() {
   const [isLoading, setIsLoading] = useState(false);
   const entriesPerPage = 10;
 
+  // Load leaderboard data from API
+  const fetchLeaderboard = async () => {
+    try {
+      const apiUrl = process.env.NODE_ENV === 'production' 
+        ? '/api/leaderboard'
+        : 'http://localhost:3001/api/leaderboard';
+
+      const response = await fetch(apiUrl);
+      
+      if (!response.ok) {
+        const errorText = await response.text();
+        console.error('Server response:', errorText);
+        throw new Error('Failed to fetch leaderboard data');
+      }
+      
+      const contentType = response.headers.get('content-type');
+      if (!contentType || !contentType.includes('application/json')) {
+        console.error('Invalid content type:', contentType);
+        throw new Error('Invalid server response format');
+      }
+
+      const data = await response.json();
+      if (!data || !Array.isArray(data.leaderboard)) {
+        console.error('Invalid data structure:', data);
+        throw new Error('Invalid leaderboard data format');
+      }
+
+      // Sort by timestamp (oldest first - first submission on top)
+      const sortedData = data.leaderboard.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+      setLeaderboardData(sortedData);
+    } catch (error) {
+      console.error('Error fetching leaderboard:', error);
+      setLeaderboardData([]);
+    }
+  };
+
   const handleClearLeaderboard = async () => {
     setIsLoading(true);
     try {
@@ -33,7 +69,8 @@ function Leaderboard() {
         throw new Error(data.error || 'Failed to clear leaderboard');
       }
 
-      setLeaderboardData([]);
+      // Refresh data from server to ensure it's cleared
+      await fetchLeaderboard();
       setIsModalOpen(false);
       setPassword('');
       toast.success('Leaderboard cleared successfully', {
@@ -57,42 +94,6 @@ function Leaderboard() {
   };
 
   useEffect(() => {
-    // Load leaderboard data from API
-    const fetchLeaderboard = async () => {
-      try {
-        const apiUrl = process.env.NODE_ENV === 'production' 
-          ? '/api/leaderboard'
-          : 'http://localhost:3001/api/leaderboard';
-
-        const response = await fetch(apiUrl);
-        
-        if (!response.ok) {
-          const errorText = await response.text();
-          console.error('Server response:', errorText);
-          throw new Error('Failed to fetch leaderboard data');
-        }
-        
-        const contentType = response.headers.get('content-type');
-        if (!contentType || !contentType.includes('application/json')) {
-          console.error('Invalid content type:', contentType);
-          throw new Error('Invalid server response format');
-        }
-
-        const data = await response.json();
-        if (!data || !Array.isArray(data.leaderboard)) {
-          console.error('Invalid data structure:', data);
-          throw new Error('Invalid leaderboard data format');
-        }
-
-        // Sort by timestamp (newest first)
-        const sortedData = data.leaderboard.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-        setLeaderboardData(sortedData);
-      } catch (error) {
-        console.error('Error fetching leaderboard:', error);
-        setLeaderboardData([]);
-      }
-    };
-    
     fetchLeaderboard();
 
     // Handle window resize

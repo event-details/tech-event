@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/outline';
 import EventHeader from './EventHeader';
 import AgendaTable from './AgendaTable';
 import AgendaCard from './AgendaCard';
@@ -61,16 +62,34 @@ function EventPage() {
           )}
         </div>
 
-        <div className="fixed bottom-20 right-4 z-40">
+        <div className="fixed top-1/2 right-4 transform -translate-y-1/2 z-40">
           <a
-            href="https://www.google.com"
+            href={eventData.feedbackLink || "https://www.google.com"}
             target="_blank"
             rel="noopener noreferrer"
-            style={{ backgroundColor: '#8f5a39' }}
-            className="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-full shadow-lg text-white hover:opacity-90 transition-colors"
+            className="inline-flex flex-col items-center justify-center px-2 py-6 text-xs font-light tracking-wide rounded-full shadow-md hover:shadow-lg transition-all duration-300 hover:scale-105 relative"
+            style={{ 
+              backgroundColor: '#f4efe7',
+              color: '#905a39',
+              border: '1px solid #905a39',
+              minHeight: '120px',
+              width: '32px'
+            }}
             aria-label="Give feedback"
           >
-            Feedback
+            
+            <div
+              style={{ 
+                writingMode: 'vertical-lr', 
+                textOrientation: 'mixed'
+            
+              }}
+            >
+              Feedback
+            </div>
+            <div className="absolute bottom-2 left-1/2 transform -translate-x-1/2">
+              <ArrowTopRightOnSquareIcon className="w-3 h-3" style={{ color: '#905a39' }} />
+            </div>
           </a>
         </div>
 
