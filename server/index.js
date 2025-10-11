@@ -9,7 +9,7 @@ const isProduction = process.env.NODE_ENV === 'production';
 
 // Configure CORS
 app.use(cors({
-  origin: isProduction ? false : ['http://localhost:5173', 'http://localhost:3000'],
+  origin: isProduction ? true : ['http://localhost:5173', 'http://localhost:3000'],
   methods: ['GET', 'POST', 'DELETE'],
   credentials: true
 }));
