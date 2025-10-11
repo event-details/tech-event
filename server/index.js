@@ -150,7 +150,7 @@ if (isProduction) {
   app.use(express.static(path.join(__dirname, 'dist')));
 
   // Handle client-side routing by serving index.html for all non-API routes
-  app.get('/:path(*)', (req, res) => {
+  app.get('*', (req, res) => {
     if (!req.path.startsWith('/api')) {
       res.sendFile(path.join(__dirname, 'dist', 'index.html'));
     }
