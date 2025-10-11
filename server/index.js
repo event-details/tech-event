@@ -23,8 +23,34 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Path to leaderboard data file
-const LEADERBOARD_FILE = path.join(__dirname, 'src', 'leaderboardData.json');
+// Path to data files
+const LEADERBOARD_FILE = path.join(__dirname, 'data', 'leaderboardData.json');
+const EVENT_DATA_FILE = path.join(__dirname, 'data', 'data.json');
+const CHATBOT_DATA_FILE = path.join(__dirname, 'data', 'chatbotData.json');
+
+// GET endpoint to retrieve event data
+app.get('/api/event-data', async (req, res) => {
+  try {
+    const data = await fs.readFile(EVENT_DATA_FILE, 'utf8');
+    const eventData = JSON.parse(data);
+    res.json(eventData);
+  } catch (error) {
+    console.error('Error reading event data:', error);
+    res.status(500).json({ error: 'Failed to read event data' });
+  }
+});
+
+// GET endpoint to retrieve chatbot data
+app.get('/api/chatbot-data', async (req, res) => {
+  try {
+    const data = await fs.readFile(CHATBOT_DATA_FILE, 'utf8');
+    const chatbotData = JSON.parse(data);
+    res.json(chatbotData);
+  } catch (error) {
+    console.error('Error reading chatbot data:', error);
+    res.status(500).json({ error: 'Failed to read chatbot data' });
+  }
+});
 
 // GET endpoint to retrieve leaderboard data
 app.get('/api/leaderboard', async (req, res) => {

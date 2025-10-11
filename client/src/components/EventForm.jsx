@@ -25,11 +25,16 @@ function EventForm() {
           rows: JSON.stringify(parsedData.rows, null, 2)
         });
       } else {
-        const response = await import('../data.json');
-        setFormData({
-          ...response.eventData,
-          rows: JSON.stringify(response.eventData.rows, null, 2)
-        });
+        try {
+          const response = await fetch('/api/event-data');
+          const data = await response.json();
+          setFormData({
+            ...data.eventData,
+            rows: JSON.stringify(data.eventData.rows, null, 2)
+          });
+        } catch (error) {
+          console.error('Error fetching event data:', error);
+        }
       }
     };
 

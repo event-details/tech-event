@@ -10,8 +10,9 @@ function ChatAnswersForm() {
     // Load initial chatbot data
     const loadChatbotData = async () => {
       try {
-        const response = await import('../chatbotData.json');
-        setJsonData(JSON.stringify(response, null, 2));
+        const response = await fetch('/api/chatbot-data');
+        const data = await response.json();
+        setJsonData(JSON.stringify(data, null, 2));
       } catch (error) {
         toast.error('Error loading chatbot data');
         console.error('Error loading chatbot data:', error);

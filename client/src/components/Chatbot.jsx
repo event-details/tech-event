@@ -22,8 +22,9 @@ function Chatbot() {
         if (storedData) {
           setChatbotData(JSON.parse(storedData));
         } else {
-          const response = await import('../chatbotData.json');
-          setChatbotData(response.default);
+          const response = await fetch('/api/chatbot-data');
+          const data = await response.json();
+          setChatbotData(data);
         }
       } catch (error) {
         console.error('Error loading chatbot data:', error);

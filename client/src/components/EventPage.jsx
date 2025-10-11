@@ -16,8 +16,13 @@ function EventPage() {
       if (storedData) {
         setEventData(JSON.parse(storedData));
       } else {
-        const response = await import('../data.json');
-        setEventData(response.eventData);
+        try {
+          const response = await fetch('/api/event-data');
+          const data = await response.json();
+          setEventData(data.eventData);
+        } catch (error) {
+          console.error('Error fetching event data:', error);
+        }
       }
     };
 

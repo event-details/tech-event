@@ -1,0 +1,16 @@
+{
+  "name": "tech-meet-event-server",
+  "description": "Backend server for tech event management",
+  "version": "2.2.3",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "author": "TailGrids Team <hello@tailgrids.com> (https://tailgrids.com/)",
+  "license": "MIT",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^5.1.0"
+  }
+}
