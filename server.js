@@ -54,28 +54,46 @@ initializeLeaderboard().catch(console.error);
 // POST endpoint to add new entry to leaderboard
 app.post('/api/leaderboard', async (req, res) => {
   try {
-    // Ensure required fields are present
-    const { name, mode, prompt, timestamp } = req.body;
-    if (!name || !mode || !prompt || !timestamp) {
-      return res.status(400).json({ error: 'Missing required fields' });
+    const { name, email, vulnerability } = req.body;
+
+    // Validate input fields
+    if (!name || !email || !vulnerability) {
+      return res.status(400).json({ ok: false, error: 'Missing required fields' });
+    }
+    if (name.length > 100 || email.length > 150 || vulnerability.length > 50) {
+      return res.status(400).json({ ok: false, error: 'Field length exceeded' });
     }
 
+    // Read existing leaderboard data
     let leaderboard;
     try {
       const data = await fs.readFile(LEADERBOARD_FILE, 'utf8');
-      leaderboard = JSON.parse(data);
+      leaderboard = JSON.parse(data).leaderboard;
     } catch (error) {
-      // If file doesn't exist or is corrupted, create new structure
-      leaderboard = { leaderboard: [] };
+      leaderboard = [];
     }
-    
-    leaderboard.leaderboard.push(req.body);
-    
-    await fs.writeFile(LEADERBOARD_FILE, JSON.stringify(leaderboard, null, 2));
-    res.status(201).json({ message: 'Entry added successfully' });
+
+    // Check if vulnerability already exists for the same name
+    if (leaderboard.some(entry => entry.name === name && entry.vulnerability === vulnerability)) {
+      return res.status(400).json({ ok: false, error: 'Vulnerability already submitted with your name once.' });
+    }
+
+    // Add new entry with timestamp
+    const newEntry = { name, email, vulnerability, timestamp: new Date().toISOString() };
+    leaderboard.push(newEntry);
+
+    // Sort leaderboard by timestamp in ascending order
+    leaderboard.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+
+    // Write to a temporary file first, then rename to ensure atomicity
+    const tempFile = `${LEADERBOARD_FILE}.tmp`;
+    await fs.writeFile(tempFile, JSON.stringify({ leaderboard }, null, 2));
+    await fs.rename(tempFile, LEADERBOARD_FILE);
+
+    res.status(201).json({ ok: true, entry: newEntry });
   } catch (error) {
     console.error('Error updating leaderboard:', error);
-    res.status(500).json({ error: 'Failed to update leaderboard' });
+    res.status(500).json({ ok: false, error: 'Failed to update leaderboard' });
   }
 });
 
