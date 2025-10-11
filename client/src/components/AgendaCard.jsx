@@ -20,7 +20,7 @@ function AgendaCard({ rows }) {
               return (
                 <div key={key} className="flex">
                   <dt
-                    className="text-sm font-semibold uppercase tracking-wider w-1/3 flex-shrink-0"
+                    className="text-sm font-semibold tracking-wider w-1/3 flex-shrink-0"
                     style={{ color: '#8f5a39' }}
                   >
                     {key.charAt(0).toUpperCase() + key.slice(1)}

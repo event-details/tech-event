@@ -126,27 +126,31 @@ function Chatbot() {
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="flex min-h-full items-end sm:items-center justify-center p-3 sm:p-4 text-center">
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
-                enterFrom="opacity-0 scale-95"
-                enterTo="opacity-100 scale-100"
+                enterFrom="opacity-0 scale-95 translate-y-4"
+                enterTo="opacity-100 scale-100 translate-y-0"
                 leave="ease-in duration-200"
-                leaveFrom="opacity-100 scale-100"
-                leaveTo="opacity-0 scale-95"
+                leaveFrom="opacity-100 scale-100 translate-y-0"
+                leaveTo="opacity-0 scale-95 translate-y-4"
               >
                 <Dialog.Panel 
-                  className="w-full max-w-md transform overflow-hidden rounded-2xl bg-white shadow-xl transition-all"
-                  style={{ border: '1px solid #f4efe7' }}
+                  className="w-full max-w-sm sm:max-w-md transform overflow-hidden rounded-2xl sm:rounded-2xl rounded-b-none sm:rounded-b-2xl bg-white shadow-xl transition-all flex flex-col"
+                  style={{ 
+                    border: '1px solid #f4efe7',
+                    maxHeight: '85vh',
+                    minHeight: '60vh'
+                  }}
                 >
                   {/* Header */}
                   <div 
-                    className="px-6 py-4 border-b"
+                    className="px-4 sm:px-6 py-3 sm:py-4 border-b flex-shrink-0"
                     style={{ borderColor: '#f4efe7' }}
                   >
                     <div className="flex justify-between items-center">
-                      <Dialog.Title as="h3" className="text-xl font-semibold text-gray-900">
+                      <Dialog.Title as="h3" className="text-lg sm:text-xl font-semibold text-gray-900">
                         Event Assistant
                       </Dialog.Title>
                       <button
@@ -159,11 +163,11 @@ function Chatbot() {
                   </div>          
             
                   {/* Messages container */}
-                  <div className="h-80 overflow-y-auto p-6 bg-gradient-to-b from-gray-50 to-gray-100">
+                  <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-gradient-to-b from-gray-50 to-gray-100 min-h-0">
                     {messages.length === 0 ? (
                       <div className="text-center text-gray-500 mt-8">
                         <ChatBubbleLeftRightIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
-                        <p className="text-sm">Hi! I'm here to help with any questions about the event.</p>
+                        <p className="text-sm px-4">Hi! I'm here to help with any questions about the event.</p>
                       </div>
                     ) : (
                       messages.map((message, idx) => (
@@ -174,10 +178,10 @@ function Chatbot() {
                           }`}
                         >
                           <div
-                            className={`inline-block px-4 py-3 rounded-xl max-w-xs ${
+                            className={`inline-block px-3 sm:px-4 py-2 sm:py-3 rounded-xl break-words ${
                               message.isUser
-                                ? 'text-white shadow-md'
-                                : 'bg-white text-gray-900 shadow-md border'
+                                ? 'text-white shadow-md max-w-[85%] sm:max-w-xs'
+                                : 'bg-white text-gray-900 shadow-md border max-w-[90%] sm:max-w-sm'
                             }`}
                             style={message.isUser 
                               ? { backgroundColor: '#8f5a39' } 
@@ -194,16 +198,16 @@ function Chatbot() {
 
                   {/* Input form */}
                   <div 
-                    className="px-6 py-4 border-t bg-white"
+                    className="px-4 sm:px-6 py-3 sm:py-4 border-t bg-white flex-shrink-0"
                     style={{ borderColor: '#f4efe7' }}
                   >
-                    <form onSubmit={handleSubmit} className="flex gap-3">
+                    <form onSubmit={handleSubmit} className="flex gap-2 sm:gap-3">
                       <input
                         type="text"
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder="Type your message..."
-                        className="flex-1 px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:scale-[1.02] text-gray-900 bg-white"
+                        className="flex-1 px-3 sm:px-4 py-2 sm:py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none text-gray-900 bg-white text-sm sm:text-base"
                         style={{ 
                           borderColor: '#f4efe7',
                           focusBorderColor: '#905a39'
@@ -215,7 +219,7 @@ function Chatbot() {
                       <button
                         type="submit"
                         disabled={!input.trim()}
-                        className="px-6 py-3 text-sm font-semibold text-white rounded-xl border-2 border-transparent transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed"
+                        className="px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold text-white rounded-xl border-2 border-transparent transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
                         style={{ backgroundColor: '#8f5a39' }}
                       >
                         Send
