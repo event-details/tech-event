@@ -80,13 +80,13 @@ initializeLeaderboard().catch(console.error);
 // POST endpoint to add new entry to leaderboard
 app.post('/api/leaderboard', async (req, res) => {
   try {
-    const { name, email, vulnerability } = req.body;
+    const { name, vulnerability } = req.body;
 
     // Validate input fields
-    if (!name || !email || !vulnerability) {
+    if (!name || !vulnerability) {
       return res.status(400).json({ ok: false, error: 'Missing required fields' });
     }
-    if (name.length > 100 || email.length > 150 || vulnerability.length > 50) {
+    if (name.length > 100 || vulnerability.length > 150) {
       return res.status(400).json({ ok: false, error: 'Field length exceeded' });
     }
 
@@ -105,7 +105,7 @@ app.post('/api/leaderboard', async (req, res) => {
     }
 
     // Add new entry with timestamp
-    const newEntry = { name, email, vulnerability, timestamp: new Date().toISOString() };
+    const newEntry = { name, vulnerability, timestamp: new Date().toISOString() };
     leaderboard.push(newEntry);
 
     // Sort leaderboard by timestamp in ascending order

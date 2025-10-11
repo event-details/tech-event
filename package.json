@@ -11,7 +11,8 @@
     "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\"",
     "build": "cd client && npm run build",
     "start": "cd server && NODE_ENV=production npm start",
-    "deploy": "npm run build && npm run start"
+    "deploy": "npm run build && npm run start",
+    "postinstall": "npm run install-client"
   },
   "author": "TailGrids Team <hello@tailgrids.com> (https://tailgrids.com/)",
   "homepage": "https://tailgrids.com/",

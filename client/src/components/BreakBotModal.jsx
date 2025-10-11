@@ -21,19 +21,19 @@ const BreakBotModal = ({ isOpen, onClose, prompt }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
+    // Map fields to backend requirements
+    // Backend expects: name, vulnerability
     const submission = {
       name,
       mode,
-      prompt,
-      timestamp: new Date().toISOString(),
+      vulnerability: prompt,
     };
 
     try {
-      const apiUrl = process.env.NODE_ENV === 'production' 
+      const apiUrl = process.env.NODE_ENV === 'production'
         ? '/api/leaderboard'
         : 'http://localhost:3001/api/leaderboard';
-        
+
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
@@ -45,8 +45,7 @@ const BreakBotModal = ({ isOpen, onClose, prompt }) => {
       if (!response.ok) {
         throw new Error('Failed to save to leaderboard');
       }
-      
-      // Show success feedback
+
       setShowConfetti(true);
       toast.success('Successfully added to leaderboard!', {
         style: {
@@ -70,25 +69,8 @@ const BreakBotModal = ({ isOpen, onClose, prompt }) => {
       return;
     }
 
-    // Show success feedback
-    setShowConfetti(true);
-    toast.success('Successfully added to leaderboard!', {
-      style: {
-        border: '1px solid #8f5a39',
-        padding: '16px',
-        color: '#8f5a39',
-      },
-      iconTheme: {
-        primary: '#8f5a39',
-        secondary: '#FFFAEE',
-      },
-    });
-    
-    // Reset form
-    setName('');
-    setMode('Zoom');
-    
-    // Close modal after delay
+  setName('');
+  setMode('Zoom');
     setTimeout(() => {
       setShowConfetti(false);
       onClose();
