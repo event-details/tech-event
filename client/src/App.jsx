@@ -6,6 +6,7 @@ import EventPage from './components/EventPage';
 import EventForm from './components/EventForm';
 import Leaderboard from './components/Leaderboard';
 import ChatAnswersForm from './components/ChatAnswersForm';
+import Speakers from './components/Speakers';
 
 function App() {
   return (
@@ -39,6 +40,7 @@ function App() {
                 </ProtectedRoute>
               } 
             />
+            <Route path="/speakers" element={<Speakers />} />
           </Routes>
         </Layout>
       </div>

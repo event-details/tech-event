@@ -13,7 +13,8 @@ function EventForm() {
     venue: '',
     email: '',
     rows: '',
-    feedbackLink: ''
+    feedbackLink: '',
+    speakers: ''
   });
   const [loading, setLoading] = useState(false);
 
@@ -28,7 +29,8 @@ function EventForm() {
             ...parsedData,
             rows: JSON.stringify(parsedData.rows, null, 2),
             feedbackLink: parsedData.feedbackLink || '',
-            email: parsedData.email || ''
+            email: parsedData.email || '',
+            speakers: JSON.stringify(parsedData.speakers || [], null, 2)
           });
         } else {
           const response = await fetch('/api/event-data');
@@ -37,7 +39,8 @@ function EventForm() {
             ...data.eventData,
             rows: JSON.stringify(data.eventData.rows, null, 2),
             feedbackLink: data.eventData.feedbackLink || '',
-            email: data.eventData.email || ''
+            email: data.eventData.email || '',
+            speakers: JSON.stringify(data.eventData.speakers || [], null, 2)
           });
         }
       } catch (error) {
@@ -60,6 +63,11 @@ function EventForm() {
         throw new Error('Rows must be an array');
       }
 
+      const speakers = JSON.parse(formData.speakers);
+      if (!Array.isArray(speakers)) {
+        throw new Error('Speakers must be an array');
+      }
+
       const eventData = {
         title: formData.title,
         subtitle: formData.subtitle,
@@ -67,7 +75,8 @@ function EventForm() {
         venue: formData.venue,
         email: formData.email,
         feedbackLink: formData.feedbackLink,
-        rows
+        rows,
+        speakers
       };
 
       // Save to server
@@ -90,7 +99,13 @@ function EventForm() {
       navigate('/');
     } catch (error) {
       console.error('Error saving event data:', error);
-      toast.error(error.message === 'Rows must be an array' ? 'Invalid JSON in rows field' : 'Failed to save event data');
+      if (error.message === 'Rows must be an array') {
+        toast.error('Invalid JSON in rows field');
+      } else if (error.message === 'Speakers must be an array') {
+        toast.error('Invalid JSON in speakers field');
+      } else {
+        toast.error('Failed to save event data');
+      }
     } finally {
       setLoading(false);
     }
@@ -301,6 +316,35 @@ function EventForm() {
                 </div>
                 <p className="text-xs text-gray-500 mt-2">
                   Enter the event schedule as a JSON array. Each item should have Start, End, Category, Topic, and Speakers fields.
+                </p>
+              </div>
+
+              {/* Speakers JSON */}
+              <div className="mb-8">
+                <label htmlFor="speakers" className="block text-sm font-semibold mb-2" style={{ color: '#8f5a39' }}>
+                  Speaker Information (JSON Format)
+                </label>
+                <div className="relative">
+                  <textarea
+                    id="speakers"
+                    rows={10}
+                    value={formData.speakers}
+                    onChange={(e) => setFormData({ ...formData, speakers: e.target.value })}
+                    className="w-full px-4 py-4 rounded-xl border-2 transition-all duration-200 focus:outline-none focus:scale-[1.01] text-gray-900 bg-white font-mono text-sm"
+                    style={{
+                      borderColor: '#f4efe7',
+                      focusBorderColor: '#905a39'
+                    }}
+                    onFocus={(e) => e.target.style.borderColor = '#905a39'}
+                    onBlur={(e) => e.target.style.borderColor = '#f4efe7'}
+                    placeholder='[{"Speaker": "John Doe", "Title": "CEO", "Company": "Tech Corp", "Bio": "Experienced leader in technology"}]'
+                  />
+                  <div className="absolute top-2 right-2 text-xs text-gray-400 bg-white px-2 py-1 rounded">
+                    JSON
+                  </div>
+                </div>
+                <p className="text-xs text-gray-500 mt-2">
+                  Enter speaker information as a JSON array. Each speaker object can have any key-value pairs (e.g., Speaker, Title, Company, Bio, etc.).
                 </p>
               </div>
 

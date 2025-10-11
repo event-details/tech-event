@@ -41,6 +41,7 @@ function Header() {
 
   const publicNavigation = [
     { name: 'Home', href: '/' },
+    { name: 'Speakers', href: '/speakers' },
     { name: 'Leaderboard', href: '/leaderboard' }
   ];
 

@@ -43,16 +43,21 @@ app.get('/api/event-data', async (req, res) => {
 // POST endpoint to update event data
 app.post('/api/event-data', async (req, res) => {
   try {
-    const { title, subtitle, date, venue, email, feedbackLink, rows } = req.body;
+    const { title, subtitle, date, venue, email, feedbackLink, rows, speakers } = req.body;
     
     // Validate required fields
     if (!title || !subtitle || !date || !venue || !email || !rows) {
-      return res.status(400).json({ error: 'All fields except feedbackLink are required' });
+      return res.status(400).json({ error: 'All fields except feedbackLink and speakers are required' });
     }
 
     // Validate rows is an array
     if (!Array.isArray(rows)) {
       return res.status(400).json({ error: 'Rows must be an array' });
+    }
+
+    // Validate speakers is an array (if provided)
+    if (speakers !== undefined && !Array.isArray(speakers)) {
+      return res.status(400).json({ error: 'Speakers must be an array' });
     }
 
     const updatedEventData = {
@@ -63,7 +68,8 @@ app.post('/api/event-data', async (req, res) => {
         venue,
         email,
         feedbackLink: feedbackLink || '',
-        rows
+        rows,
+        speakers: speakers || []
       }
     };
 
