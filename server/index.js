@@ -8,6 +8,7 @@ const cors = require('cors');
 const { initializeSupabase } = require('./config/supabase');
 const LeaderboardService = require('./services/leaderboardService');
 const DataService = require('./services/dataService');
+const ChatbotService = require('./services/chatbotService');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -116,10 +117,117 @@ app.post('/api/chatbot-data', async (req, res) => {
     };
 
     await DataService.saveChatbotData(updatedChatbotData);
+    
+    // Refresh the chatbot service with new data
+    await ChatbotService.refreshData();
+    
     res.json({ success: true, message: 'Chatbot data updated successfully' });
   } catch (error) {
     console.error('Error updating chatbot data:', error);
     res.status(500).json({ error: 'Failed to update chatbot data' });
+  }
+});
+
+// GET endpoint to retrieve vulnerability data
+app.get('/api/vulnerability-data', async (req, res) => {
+  try {
+    const vulnerabilityData = await DataService.getVulnerabilityData();
+    res.json(vulnerabilityData);
+  } catch (error) {
+    console.error('Error reading vulnerability data:', error);
+    res.status(500).json({ error: 'Failed to read vulnerability data' });
+  }
+});
+
+// POST endpoint to update vulnerability data
+app.post('/api/vulnerability-data', async (req, res) => {
+  try {
+    const { vulnerabilities } = req.body;
+    
+    // Validate required fields
+    if (!vulnerabilities || !Array.isArray(vulnerabilities)) {
+      return res.status(400).json({ error: 'Vulnerabilities array is required' });
+    }
+
+    // Validate each vulnerability object
+    vulnerabilities.forEach((vulnerability, index) => {
+      if (!vulnerability.keywords || !Array.isArray(vulnerability.keywords)) {
+        return res.status(400).json({ error: `Vulnerability ${index + 1}: keywords must be an array` });
+      }
+      
+      // Support both 'description' and 'category' fields for backward compatibility
+      const hasDescription = vulnerability.description && typeof vulnerability.description === 'string';
+      const hasCategory = vulnerability.category && typeof vulnerability.category === 'string';
+      
+      if (!hasDescription && !hasCategory) {
+        return res.status(400).json({ error: `Vulnerability ${index + 1}: must have either 'description' or 'category' field` });
+      }
+    });
+
+    const updatedVulnerabilityData = {
+      vulnerabilities
+    };
+
+    await DataService.saveVulnerabilityData(updatedVulnerabilityData);
+    
+    // Refresh the chatbot service with new vulnerability data
+    await ChatbotService.refreshData();
+    
+    res.json({ success: true, message: 'Vulnerability data updated successfully' });
+  } catch (error) {
+    console.error('Error updating vulnerability data:', error);
+    res.status(500).json({ error: 'Failed to update vulnerability data' });
+  }
+});
+
+// POST endpoint for AI-enhanced chat processing
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { userMessage } = req.body;
+    
+    // Validate input
+    if (!userMessage || typeof userMessage !== 'string') {
+      return res.status(400).json({ 
+        error: 'userMessage is required and must be a string',
+        success: false 
+      });
+    }
+
+    if (userMessage.trim().length === 0) {
+      return res.status(400).json({ 
+        error: 'userMessage cannot be empty',
+        success: false 
+      });
+    }
+
+    if (userMessage.length > 1000) {
+      return res.status(400).json({ 
+        error: 'userMessage is too long (max 1000 characters)',
+        success: false 
+      });
+    }
+
+    // Process the message using the advanced chatbot service
+    const response = await ChatbotService.processMessage(userMessage);
+    
+    res.json({
+      success: true,
+      response: response.text,
+      matchType: response.matchType,
+      matchedKeyword: response.matchedKeyword,
+      fuzzyScore: response.fuzzyScore,
+      triggerBreakBot: response.triggerBreakBot,
+      vulnerabilityDescription: response.vulnerabilityDescription,
+      category: response.vulnerabilityDescription || 'Unknown',
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('Error processing chat message:', error);
+    res.status(500).json({ 
+      error: 'Failed to process chat message',
+      success: false 
+    });
   }
 });
 
@@ -151,7 +259,7 @@ initializeServices();
 // POST endpoint to add new entry to leaderboard
 app.post('/api/leaderboard', async (req, res) => {
   try {
-    const { name, mode, vulnerability } = req.body;
+    const { name, mode, vulnerability, category } = req.body;
 
     // Validate input fields
     if (!name || !mode || !vulnerability) {
@@ -167,6 +275,7 @@ app.post('/api/leaderboard', async (req, res) => {
       mode,
       vulnerability,
       prompt: vulnerability,
+      category: category || 'Unknown',
       timestamp: new Date().toISOString()
     };
 

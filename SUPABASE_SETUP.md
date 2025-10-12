@@ -48,6 +48,7 @@ CREATE TABLE IF NOT EXISTS leaderboard (
   mode VARCHAR(50) NOT NULL,
   vulnerability VARCHAR(500) NOT NULL,
   prompt VARCHAR(500),
+  category VARCHAR(200) DEFAULT 'Unknown',
   timestamp TIMESTAMPTZ DEFAULT NOW(),
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -68,6 +69,9 @@ ON leaderboard(name, vulnerability);
 
 CREATE INDEX IF NOT EXISTS idx_leaderboard_timestamp 
 ON leaderboard(timestamp);
+
+-- Migration: Add category column to existing leaderboard table (run this if table already exists)
+ALTER TABLE leaderboard ADD COLUMN IF NOT EXISTS category VARCHAR(200) DEFAULT 'Unknown';
 
 CREATE INDEX IF NOT EXISTS idx_json_documents_name ON json_documents(name);
 CREATE INDEX IF NOT EXISTS idx_json_documents_updated_at ON json_documents(updated_at);

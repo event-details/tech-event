@@ -10,6 +10,7 @@ function Chatbot() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [showBreakBot, setShowBreakBot] = useState(false);
+  const [breakBotData, setBreakBotData] = useState(null);
   const [chatbotData, setChatbotData] = useState(null);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
@@ -148,33 +149,86 @@ function Chatbot() {
     };
   }, [isOpen]);
 
-  const processMessage = (userMessage) => {
-    const message = userMessage.toLowerCase();
-    
-    if (!chatbotData) return null;
+  const processMessage = async (userMessage) => {
+    try {
+      // Use the new AI-enhanced chat endpoint
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userMessage }),
+      });
 
-    // Check for matches in responses
-    const matchedResponse = chatbotData.responses.find(response =>
-      response.keywords.some(keyword => message.includes(keyword.toLowerCase()))
-    );
-
-    if (matchedResponse) {
-      if (matchedResponse.triggerBreakBot) {
-        // Show response first, then close chat and show break bot modal
-        setTimeout(() => {
-          setIsOpen(false);
-          setTimeout(() => {
-            setShowBreakBot(true);
-          }, 100); // Wait for chat close animation
-        }, 200); // Wait for response to be shown
+      if (!response.ok) {
+        throw new Error('Failed to get response from server');
       }
-      return matchedResponse.answer;
-    }
 
-    return chatbotData.fallback;
+      const data = await response.json();
+      
+      if (data.success) {
+        // Handle break bot trigger
+        if (data.triggerBreakBot) {
+          // Store break bot data including category
+          setBreakBotData({
+            prompt: data.matchedKeyword || userMessage,
+            category: data.category || data.vulnerabilityDescription || 'Unknown'
+          });
+          
+          // Show response first, then close chat and show break bot modal
+          setTimeout(() => {
+            setIsOpen(false);
+            setTimeout(() => {
+              setShowBreakBot(true);
+            }, 100); // Wait for chat close animation
+          }, 200); // Wait for response to be shown
+        }
+        
+        return {
+          text: data.response,
+          matchType: data.matchType,
+          matchedKeyword: data.matchedKeyword,
+          fuzzyScore: data.fuzzyScore
+        };
+      } else {
+        throw new Error(data.error || 'Unknown error');
+      }
+    } catch (error) {
+      console.error('Error processing message:', error);
+      
+      // Fallback to local processing if server is unavailable
+      if (chatbotData) {
+        const message = userMessage.toLowerCase();
+        const matchedResponse = chatbotData.responses.find(response =>
+          response.keywords.some(keyword => message.includes(keyword.toLowerCase()))
+        );
+
+        if (matchedResponse) {
+          if (matchedResponse.triggerBreakBot) {
+            setTimeout(() => {
+              setIsOpen(false);
+              setTimeout(() => {
+                setShowBreakBot(true);
+              }, 100);
+            }, 200);
+          }
+          
+          // Handle both new and old formats
+          const responseText = Array.isArray(matchedResponse.answers) 
+            ? matchedResponse.answers[Math.floor(Math.random() * matchedResponse.answers.length)]
+            : matchedResponse.answer;
+            
+          return { text: responseText, matchType: 'fallback-local' };
+        }
+
+        return { text: chatbotData.fallback, matchType: 'fallback-local' };
+      }
+      
+      return { text: "I'm having trouble connecting. Please try again.", matchType: 'error' };
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!input.trim()) return;
 
@@ -190,12 +244,36 @@ function Chatbot() {
     // Add user message
     setMessages(prev => [...prev, { text: userMessage, isUser: true }]);
 
+    // Add typing indicator
+    setMessages(prev => [...prev, { text: '...', isUser: false, isTyping: true }]);
+
     // Process and add bot response
-    const botResponse = processMessage(userMessage);
-    if (botResponse) {
-      setTimeout(() => {
-        setMessages(prev => [...prev, { text: botResponse, isUser: false }]);
-      }, 500);
+    try {
+      const botResponse = await processMessage(userMessage);
+      
+      // Remove typing indicator and add actual response
+      setMessages(prev => {
+        const newMessages = prev.filter(msg => !msg.isTyping);
+        return [...newMessages, { 
+          text: botResponse.text, 
+          isUser: false,
+          matchType: botResponse.matchType,
+          matchedKeyword: botResponse.matchedKeyword,
+          fuzzyScore: botResponse.fuzzyScore
+        }];
+      });
+    } catch (error) {
+      console.error('Error getting bot response:', error);
+      
+      // Remove typing indicator and add error message
+      setMessages(prev => {
+        const newMessages = prev.filter(msg => !msg.isTyping);
+        return [...newMessages, { 
+          text: "I'm experiencing some difficulties. Please try again.", 
+          isUser: false,
+          matchType: 'error'
+        }];
+      });
     }
 
     // Re-focus input after a short delay for better UX
@@ -322,13 +400,21 @@ function Chatbot() {
                               message.isUser
                                 ? 'text-white shadow-md max-w-[85%] sm:max-w-xs'
                                 : 'bg-white text-gray-900 shadow-md border max-w-[90%] sm:max-w-sm'
-                            }`}
+                            } ${message.isTyping ? 'animate-pulse' : ''}`}
                             style={message.isUser 
                               ? { backgroundColor: '#8f5a39' } 
                               : { borderColor: '#f4efe7' }
                             }
                           >
-                            {message.text}
+                            {message.isTyping ? (
+                              <div className="flex space-x-1">
+                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce"></div>
+                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.1s' }}></div>
+                                <div className="w-2 h-2 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0.2s' }}></div>
+                              </div>
+                            ) : (
+                              message.text
+                            )}
                           </div>
                         </div>
                       ))
@@ -425,8 +511,12 @@ function Chatbot() {
       <Suspense fallback={<div>Loading...</div>}>
         <BreakBotModal
           isOpen={showBreakBot}
-          onClose={() => setShowBreakBot(false)}
-          prompt="break the bot"
+          onClose={() => {
+            setShowBreakBot(false);
+            setBreakBotData(null);
+          }}
+          prompt={breakBotData?.prompt || "break the bot"}
+          category={breakBotData?.category || "Unknown"}
         />
       </Suspense>
     </>

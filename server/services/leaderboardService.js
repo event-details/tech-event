@@ -57,6 +57,7 @@ class LeaderboardService {
             mode: entry.mode,
             vulnerability: entry.vulnerability,
             prompt: entry.prompt || entry.vulnerability,
+            category: entry.category || 'Unknown',
             timestamp: entry.timestamp || new Date().toISOString()
           }])
           .select();
@@ -135,6 +136,7 @@ class LeaderboardService {
         mode: entry.mode, 
         vulnerability: entry.vulnerability, 
         prompt: entry.prompt || entry.vulnerability,
+        category: entry.category || 'Unknown',
         timestamp: entry.timestamp || new Date().toISOString()
       };
       leaderboard.push(newEntry);

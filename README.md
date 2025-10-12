@@ -21,17 +21,24 @@ A full-stack web application for managing tech events, built as a responsive Rea
 - Password-protected administrative routes
 - Responsive agenda table/card views for mobile and desktop
 
-#### 2. **Interactive Chatbot**
-- AI-powered chatbot with predefined responses
-- Keyword-based response system
-- "BreakBot" feature for networking breaks
-- Confetti animations for engagement
-- Mobile-optimized chat interface
+#### 2. **Advanced NLP Chatbot with Vulnerability Detection**
+- **Lemmatization**: Advanced text processing using compromise.js
+- **Fuzzy Search**: AI-like keyword matching with Fuse.js
+- **Randomized Responses**: Human-like conversation patterns
+- **Vulnerability Detection System**: 
+  - Detects security-related prompts (DAN, admin access, etc.)
+  - Categories vulnerabilities by type
+  - Triggers "Break Bot" modal for leaderboard submission
+- Mobile-optimized chat interface with confetti animations
 
-#### 3. **Leaderboard System**
-- Participant scoring and ranking
-- Real-time updates
-- Interactive leaderboard display
+#### 3. **Advanced Leaderboard System**
+- Participant scoring and ranking with vulnerability categories
+- Real-time updates with category tracking
+- Interactive leaderboard display showing:
+  - Challenger name and mode
+  - **Vulnerability category** (DAN, Admin/Control, Urgency/Panic, etc.)
+  - Winning prompt used to break the bot
+  - Achievement timestamp
 
 #### 4. **Speakers Management**
 - Speaker profiles and information
@@ -125,8 +132,23 @@ npm run dev-client
 npm run dev-server
 ```
 
-### Production Build
+### Production Build & Deployment
 
+#### Quick Deploy (Recommended)
+Use the automated deployment script:
+```bash
+./deploy.sh
+```
+
+This script will:
+- Clean up old build artifacts
+- Install all dependencies
+- Run security audit
+- Build client for production
+- Test server functionality
+- Generate deployment checklist
+
+#### Manual Build
 1. Build the client for production:
 ```bash
 npm run build

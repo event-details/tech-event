@@ -4,7 +4,7 @@ import { XMarkIcon, TrophyIcon, UserCircleIcon, DevicePhoneMobileIcon } from '@h
 import Confetti from 'react-confetti';
 import { toast, Toaster } from 'react-hot-toast';
 
-const BreakBotModal = ({ isOpen, onClose, prompt }) => {
+const BreakBotModal = ({ isOpen, onClose, prompt, category }) => {
   const [name, setName] = useState('');
   const [mode, setMode] = useState('Zoom');
   const [showConfetti, setShowConfetti] = useState(false);
@@ -27,6 +27,7 @@ const BreakBotModal = ({ isOpen, onClose, prompt }) => {
       name,
       mode,
       vulnerability: prompt,
+      category: category || 'Unknown',
     };
 
     try {

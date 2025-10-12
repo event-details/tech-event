@@ -238,9 +238,14 @@ function Leaderboard() {
                   <div className="flex-shrink-0 w-12 h-12 flex items-center justify-center rounded-full bg-[#8f5a39]/10 text-[#8f5a39] font-bold text-lg">
                     #{(currentPage - 1) * entriesPerPage + index + 1}
                   </div>
-                  <div>
+                  <div className="flex-grow">
                     <h3 className="font-bold text-lg text-gray-900">{entry.name}</h3>
-                    <p className="text-sm text-[#8f5a39]">{entry.mode}</p>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm text-[#8f5a39]">{entry.mode}</p>
+                      <span className="px-2 py-1 rounded-md text-xs bg-blue-100 text-blue-800 font-medium">
+                        {entry.category || 'Unknown'}
+                      </span>
+                    </div>
                   </div>
                 </div>
                 <p className="text-gray-600 mb-2 italic">"{entry.prompt}"</p>
@@ -265,6 +270,9 @@ function Leaderboard() {
                   Mode
                 </th>
                 <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-[#8f5a39] uppercase tracking-wider">
+                  Category
+                </th>
+                <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-[#8f5a39] uppercase tracking-wider">
                   Winning Prompt
                 </th>
                 <th scope="col" className="px-6 py-4 text-left text-xs font-bold text-[#8f5a39] uppercase tracking-wider">
@@ -286,6 +294,11 @@ function Leaderboard() {
                   <td className="px-6 py-4 whitespace-nowrap">
                     <span className="px-3 py-1 rounded-full text-sm bg-[#8f5a39]/10 text-[#8f5a39]">
                       {entry.mode}
+                    </span>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="px-2 py-1 rounded-md text-xs bg-blue-100 text-blue-800 font-medium">
+                      {entry.category || 'Unknown'}
                     </span>
                   </td>
                   <td className="px-6 py-4">
