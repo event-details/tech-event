@@ -2,6 +2,19 @@
   "responses": [
     {
       "keywords": [
+        "hi",
+        "hello",
+        "hey",
+        "good morning",
+        "good afternoon",
+        "good evening",
+        "greetings"
+      ],
+      "answer": "Hello there! 👋 Welcome to TECH MEETUP 25 — how can I help you today?",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
         "what",
         "is",
         "tech meetup",

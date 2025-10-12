@@ -6,6 +6,7 @@ import AdminLogout from './AdminLogout';
 function ChatAnswersForm() {
   const navigate = useNavigate();
   const [jsonData, setJsonData] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     // Load initial chatbot data
@@ -36,6 +37,10 @@ function ChatAnswersForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Prevent double submission
+    if (isSubmitting) return;
+    setIsSubmitting(true);
     
     try {
       // Validate JSON
@@ -102,6 +107,8 @@ function ChatAnswersForm() {
           secondary: '#FFFFFF',
         },
       });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -153,10 +160,11 @@ function ChatAnswersForm() {
               </button>
               <button
                 type="submit"
-                className="px-4 py-2 text-sm font-medium text-white rounded-md hover:opacity-90 transition-colors font-serif"
+                disabled={isSubmitting}
+                className="px-4 py-2 text-sm font-medium text-white rounded-md hover:opacity-90 transition-colors font-serif disabled:opacity-50 disabled:cursor-not-allowed"
                 style={{ backgroundColor: '#8f5a39' }}
               >
-                Save Changes
+                {isSubmitting ? 'Saving...' : 'Save Changes'}
               </button>
             </div>
           </form>
