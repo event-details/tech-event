@@ -245,10 +245,17 @@ app.get('/api/leaderboard', async (req, res) => {
 // Initialize on startup
 const initializeServices = async () => {
   try {
-    // Initialize Supabase
+    // Initialize Supabase first
     await initializeSupabase();
+    console.log('✅ Supabase initialization completed');
+    
+    // Initialize ChatbotService after Supabase is ready
+    await ChatbotService.initializeService();
+    console.log('✅ ChatbotService initialization completed');
+    
     // Initialize leaderboard file as fallback
     await LeaderboardService.initializeLeaderboardFile();
+    console.log('✅ All services initialized successfully');
   } catch (error) {
     console.error('Error initializing services:', error);
   }
@@ -308,6 +315,54 @@ app.delete('/api/leaderboard', async (req, res) => {
   } catch (error) {
     console.error('Error clearing leaderboard:', error);
     res.status(500).json({ error: 'Failed to clear leaderboard' });
+  }
+});
+
+// DEBUG endpoint to check system status (remove in production)
+app.get('/api/debug/status', async (req, res) => {
+  try {
+    const { isSupabaseReady } = require('./config/supabase');
+    
+    let chatbotData = null;
+    let eventData = null;
+    let supabaseStatus = 'Not connected';
+    
+    if (isSupabaseReady()) {
+      supabaseStatus = 'Connected';
+      try {
+        chatbotData = await DataService.getChatbotData();
+      } catch (e) {
+        chatbotData = { error: e.message };
+      }
+      
+      try {
+        eventData = await DataService.getEventData();
+      } catch (e) {
+        eventData = { error: e.message };
+      }
+    }
+    
+    res.json({
+      timestamp: new Date().toISOString(),
+      supabase: {
+        status: supabaseStatus,
+        url: process.env.SUPABASE_URL ? 'Set' : 'Not set',
+        key: process.env.SUPABASE_ANON_KEY ? 'Set' : 'Not set'
+      },
+      chatbotData: {
+        loaded: !!chatbotData,
+        hasResponses: chatbotData?.responses?.length || 0,
+        hasFallback: !!chatbotData?.fallback,
+        error: chatbotData?.error
+      },
+      eventData: {
+        loaded: !!eventData,
+        hasEventData: !!eventData?.eventData,
+        error: eventData?.error
+      }
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
 });
 
