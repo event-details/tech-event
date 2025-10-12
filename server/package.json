@@ -7,7 +7,7 @@
     "start": "node index.js",
     "dev": "node index.js"
   },
-  "author": "TailGrids Team <hello@tailgrids.com> (https://tailgrids.com/)",
+  "author": "Avirag Gautam",
   "license": "MIT",
   "dependencies": {
     "@supabase/supabase-js": "^2.75.0",

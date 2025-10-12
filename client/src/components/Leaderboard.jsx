@@ -74,19 +74,29 @@ function Leaderboard() {
       await fetchLeaderboard();
       setIsModalOpen(false);
       setPassword('');
-      toast.success('Leaderboard cleared successfully', {
+      toast.success('Successfully cleared leaderboard!', {
         style: {
           border: '1px solid #10B981',
           padding: '16px',
           color: '#059669',
+          backgroundColor: '#F0FDF4',
+        },
+        iconTheme: {
+          primary: '#10B981',
+          secondary: '#FFFFFF',
         },
       });
     } catch (error) {
       toast.error(error.message, {
         style: {
-          border: '1px solid #DC2626',
+          border: '1px solid #dc2626',
           padding: '16px',
-          color: '#DC2626',
+          color: '#dc2626',
+          backgroundColor: '#FEF2F2',
+        },
+        iconTheme: {
+          primary: '#dc2626',
+          secondary: '#FFFFFF',
         },
       });
     } finally {

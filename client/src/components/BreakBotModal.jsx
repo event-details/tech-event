@@ -50,13 +50,14 @@ const BreakBotModal = ({ isOpen, onClose, prompt }) => {
       setShowConfetti(true);
       toast.success('Successfully added to leaderboard!', {
         style: {
-          border: '1px solid #8f5a39',
+          border: '1px solid #10B981',
           padding: '16px',
-          color: '#8f5a39',
+          color: '#059669',
+          backgroundColor: '#F0FDF4',
         },
         iconTheme: {
-          primary: '#8f5a39',
-          secondary: '#FFFAEE',
+          primary: '#10B981',
+          secondary: '#FFFFFF',
         },
       });
     } catch (error) {
@@ -66,6 +67,11 @@ const BreakBotModal = ({ isOpen, onClose, prompt }) => {
           border: '1px solid #dc2626',
           padding: '16px',
           color: '#dc2626',
+          backgroundColor: '#FEF2F2',
+        },
+        iconTheme: {
+          primary: '#dc2626',
+          secondary: '#FFFFFF',
         },
       });
       return;

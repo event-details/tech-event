@@ -2,27 +2,201 @@
   "responses": [
     {
       "keywords": [
-        "schedule",
-        "agenda",
-        "timetable"
+        "what",
+        "is",
+        "tech meetup",
+        "tech meetup 2025",
+        "about",
+        "event"
       ],
-      "answer": "The event starts at 9:00 AM with an opening keynote. You can find the full schedule on the main page."
+      "answer": "TECH MEETUP 25 is a marquee AI event bringing together top technology leaders, innovators, and developers to share insights, stories, and advancements in Artificial Intelligence and software development.",
+      "triggerBreakBot": false
     },
     {
       "keywords": [
+        "when",
+        "where",
+        "date",
         "venue",
         "location",
-        "where"
+        "place"
       ],
-      "answer": "The event is being held at ETV 9, BTC, Bengaluru."
+      "answer": "The event takes place on 16 October 2025 at ETV 9, BTC, Bengaluru.",
+      "triggerBreakBot": false
     },
     {
       "keywords": [
-        "speaker",
-        "speakers",
-        "who"
+        "agenda",
+        "schedule",
+        "sessions",
+        "timetable",
+        "program",
+        "event plan"
       ],
-      "answer": "Our keynote speakers include industry experts and tech leaders."
+      "answer": "Here’s the event agenda:\n- 9:00–10:00 AM: Breakfast\n- 10:00–10:05 AM: Opening & Agenda Overview (Deepak Mitra)\n- 10:05–10:10 AM: Personal Story & Journey (Naureen Fatima)\n- 10:10–10:30 AM: Context Setting (MK Ullah)\n- 10:30–11:30 AM: Keynote on AI (Shreevyas)\n- 11:30–12:30 PM: Fireside Chat moderated by Samdeep Nayak with Dr. Jaiganesh, Karthikeya, Joseph Jeune, and Naveen Xavier [JPMC]\n- 12:30–1:30 PM: Lunch\n- 1:30–2:20 PM: TEDx-style MD Updates by Saurabh Mishra, Ganapathy Subramanian, Prashant Mekaraj, Shivaprsada Baburao, and Shyamala Popuri\n- 2:20–2:30 PM: TEDx Summarization & Q&A (Naureen Fatima)",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "timings",
+        "time",
+        "start",
+        "end",
+        "duration"
+      ],
+      "answer": "The event begins at 9:00 AM and concludes at 2:30 PM on 16 October 2025. Each session runs between 5 to 60 minutes as per the agenda.",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "keynote",
+        "keynote speakers",
+        "main session"
+      ],
+      "answer": "The keynote session is on AI, delivered by Shreevyas from 10:30 AM to 11:30 AM.",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "topics",
+        "subject",
+        "keynote topics",
+        "covered"
+      ],
+      "answer": "Keynote topics include advancements in Artificial Intelligence, innovation in tech, and leadership insights.",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "panel",
+        "panel discussion",
+        "panelists"
+      ],
+      "answer": "There is no traditional panel discussion, but a Fireside Chat is scheduled featuring Dr. Jaiganesh, Karthikeya, Joseph Jeune, and Naveen Xavier [JPMC], moderated by Samdeep Nayak.",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "fireside chat",
+        "conversation",
+        "chat session"
+      ],
+      "answer": "A Fireside Chat is an informal yet insightful discussion. It will be moderated by Samdeep Nayak, featuring Dr. Jaiganesh, Karthikeya, Joseph Jeune, and Naveen Xavier [JPMC].",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "specialized",
+        "breakout",
+        "sessions",
+        "tracks"
+      ],
+      "answer": "Specialized sessions include TEDx-style MD Updates by senior leaders focusing on innovation, strategy, and technology trends.",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "choose",
+        "attend",
+        "select",
+        "session choice"
+      ],
+      "answer": "All attendees can participate in every session as the event follows a single-track agenda.",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "recording",
+        "recordings",
+        "video",
+        "available after"
+      ],
+      "answer": "Session recordings may be made available after the event. Please check the official communication or contact the help desk for details.",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "ask",
+        "questions",
+        "interact",
+        "q&a",
+        "query"
+      ],
+      "answer": "Yes, you can ask questions during sessions, especially during the Q&A/Summarization at 2:20 PM hosted by Naureen Fatima.",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "submit",
+        "questions",
+        "panelists",
+        "speakers",
+        "how"
+      ],
+      "answer": "Questions for speakers or panelists can be submitted during sessions through the event moderators.",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "featured",
+        "speakers",
+        "speaker list",
+        "guest"
+      ],
+      "answer": "Featured speakers include Deepak Mitra, Naureen Fatima, MK Ullah, Shreevyas, Saurabh Mishra, and other technology leaders.",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "all speakers",
+        "bios",
+        "details",
+        "information",
+        "speaker profiles"
+      ],
+      "answer": "Here are some of the speaker bios:\n- Avirag Gautam: AVP Software Development at Tech Corp, expert in full-stack and AI technologies.\n- Deepak Mitra: Senior Technology Lead at Innovation Labs, expert in event coordination and agenda management.\n- Saurabh Mishra: MD & Technology Evangelist at Future Tech, known for TEDx-style thought leadership sessions.",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "contact",
+        "support",
+        "help",
+        "query",
+        "who to reach"
+      ],
+      "answer": "For event support, please contact the organizing team at avtrixx@gmail.com.",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "help desk",
+        "information desk",
+        "assistance"
+      ],
+      "answer": "Yes, there will be an on-site help desk available at the venue for attendee assistance.",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "lost",
+        "found",
+        "missing",
+        "item"
+      ],
+      "answer": "If you lose something, please report it to the event help desk at the venue for assistance.",
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": [
+        "accessibility",
+        "special needs",
+        "accommodations",
+        "wheelchair",
+        "assistive"
+      ],
+      "answer": "Accessibility accommodations will be provided. Please inform the organizers in advance if you require any special assistance.",
+      "triggerBreakBot": false
     },
     {
       "keywords": [
@@ -30,8 +204,8 @@
         "challenge accepted",
         "debug mode"
       ],
-      "triggerBreakBot": true,
-      "answer": "Congratulations! You've found a secret command! 🎉"
+      "answer": "🎉 Congratulations! You’ve unlocked a hidden mode — Break the Bot! The system will now enter debug mode for testing purposes.",
+      "triggerBreakBot": true
     }
   ],
   "fallback": "I'm sorry, I don't have information about that. Please try asking about the schedule, venue, or speakers."

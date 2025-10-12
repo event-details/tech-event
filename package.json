@@ -6,59 +6,34 @@
     "install-client": "cd client && npm install",
     "install-server": "cd server && npm install",
     "install-all": "npm run install-client && npm run install-server",
+    "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\"",
     "dev-client": "cd client && npm run dev",
     "dev-server": "cd server && npm run dev",
-    "dev": "concurrently \"npm run dev-server\" \"npm run dev-client\"",
     "build": "cd client && npm run build",
     "start": "cd server && NODE_ENV=production npm start",
-    "deploy": "npm run build && npm run start",
     "postinstall": "npm run install-all"
   },
-  "author": "TailGrids Team <hello@tailgrids.com> (https://tailgrids.com/)",
-  "homepage": "https://tailgrids.com/",
+  "author": "Avirag Gautam",
+  "homepage": "https://tech-event-uayd.onrender.com",
   "repository": {
     "type": "git",
-    "url": "https://github.com/TailGrids/tailgrids-react"
-  },
-  "bugs": {
-    "url": "https://github.com/TailGrids/tailgrids-react/issues"
+    "url": "https://github.com/event-details/tech-event"
   },
   "license": "MIT",
   "keywords": [
-    "component-library",
-    "tailwind-react",
-    "react-components",
-    "ui-components",
-    "tailwind",
-    "tailwindcss",
-    "tailwind-css",
-    "reactjs",
-    "tailwindui",
-    "tailwind-ui",
-    "tailwind-blocks",
-    "css",
+    "tech-event",
+    "event-management",
     "react",
-    "react-ui",
-    "components",
-    "react-ui",
-    "react-ui-components",
-    "blocks",
-    "react-blocks",
-    "react-sections",
-    "tailgrids",
-    "tailwind-ui",
-    "tailwind-sections",
-    "tailgrids-react",
-    "design-system"
+    "chatbot",
+    "leaderboard",
+    "supabase"
   ],
 
   "engines": {
     "node": ">=20.19.0"
   },
   "dependencies": {
-    "concurrently": "^9.2.1",
-    "cors": "^2.8.5",
-    "express": "^4.19.2"
+    "concurrently": "^9.2.1"
   },
   "browserslist": {
     "production": [

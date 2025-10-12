@@ -186,8 +186,8 @@ app.delete('/api/leaderboard', async (req, res) => {
   try {
     const { password } = req.body;
     
-    // Check password (in production, use environment variable)
-    const ADMIN_PASSWORD = 'tech-meet-2025'; // In production, use process.env.ADMIN_PASSWORD
+    // Check password from environment variable with fallback
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'tech-meet-2025';
     
     if (password !== ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Invalid password' });

@@ -16,6 +16,7 @@
    SUPABASE_ANON_KEY=your-anon-key-here
    NODE_ENV=development
    PORT=3001
+   ADMIN_PASSWORD=your-custom-admin-password
    ```
 
 3. **Start the server:**
@@ -31,6 +32,8 @@ Add these environment variables to your deployment platform (Render, Vercel, etc
 ```
 SUPABASE_URL=your_supabase_project_url
 SUPABASE_ANON_KEY=your_supabase_anon_key
+NODE_ENV=production
+ADMIN_PASSWORD=your_secure_admin_password
 ```
 
 ## Database Schema
@@ -54,6 +57,7 @@ CREATE TABLE IF NOT EXISTS json_documents (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) UNIQUE NOT NULL,
   content JSONB NOT NULL,
+  content_ordered TEXT, -- Store JSON as text to preserve key order
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

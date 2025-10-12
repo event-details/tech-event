@@ -30,7 +30,18 @@ const BreakBotModal = ({ isOpen, onClose, prompt }) => {
 
     // Show success feedback
     setShowConfetti(true);
-    toast.success('Successfully added to leaderboard!');
+    toast.success('Successfully added to leaderboard!', {
+      style: {
+        border: '1px solid #10B981',
+        padding: '16px',
+        color: '#059669',
+        backgroundColor: '#F0FDF4',
+      },
+      iconTheme: {
+        primary: '#10B981',
+        secondary: '#FFFFFF',
+      },
+    });
     
     // Reset form
     setName('');

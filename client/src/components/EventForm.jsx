@@ -17,6 +17,7 @@ function EventForm() {
     speakers: ''
   });
   const [loading, setLoading] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     // Load initial data from localStorage or API
@@ -45,7 +46,18 @@ function EventForm() {
         }
       } catch (error) {
         console.error('Error fetching event data:', error);
-        toast.error('Failed to load event data');
+        toast.error('Failed to load event data', {
+          style: {
+            border: '1px solid #dc2626',
+            padding: '16px',
+            color: '#dc2626',
+            backgroundColor: '#FEF2F2',
+          },
+          iconTheme: {
+            primary: '#dc2626',
+            secondary: '#FFFFFF',
+          },
+        });
       }
     };
 
@@ -54,6 +66,10 @@ function EventForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
+    // Prevent double submission in React StrictMode
+    if (isSubmitting) return;
+    
     setLoading(true);
 
     try {
@@ -95,19 +111,44 @@ function EventForm() {
       // Save to localStorage for offline access
       localStorage.setItem('eventData', JSON.stringify(eventData));
 
-      toast.success('Event data saved successfully!');
+      toast.success('Successfully updated event configuration!', {
+        style: {
+          border: '1px solid #10B981',
+          padding: '16px',
+          color: '#059669',
+          backgroundColor: '#F0FDF4',
+        },
+        iconTheme: {
+          primary: '#10B981',
+          secondary: '#FFFFFF',
+        },
+      });
       navigate('/');
     } catch (error) {
       console.error('Error saving event data:', error);
+      const errorStyle = {
+        style: {
+          border: '1px solid #dc2626',
+          padding: '16px',
+          color: '#dc2626',
+          backgroundColor: '#FEF2F2',
+        },
+        iconTheme: {
+          primary: '#dc2626',
+          secondary: '#FFFFFF',
+        },
+      };
+      
       if (error.message === 'Rows must be an array') {
-        toast.error('Invalid JSON in rows field');
+        toast.error('Invalid JSON in rows field', errorStyle);
       } else if (error.message === 'Speakers must be an array') {
-        toast.error('Invalid JSON in speakers field');
+        toast.error('Invalid JSON in speakers field', errorStyle);
       } else {
-        toast.error('Failed to save event data');
+        toast.error('Failed to save event data', errorStyle);
       }
     } finally {
       setLoading(false);
+      setIsSubmitting(false);
     }
   };
 
@@ -365,7 +406,7 @@ function EventForm() {
                 </button>
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || isSubmitting}
                   className="px-8 py-3 text-sm font-semibold text-white rounded-xl border-2 border-transparent transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2"
                   style={{ backgroundColor: '#8f5a39' }}
                 >

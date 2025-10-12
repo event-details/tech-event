@@ -11,8 +11,11 @@ function Chatbot() {
   const [input, setInput] = useState('');
   const [showBreakBot, setShowBreakBot] = useState(false);
   const [chatbotData, setChatbotData] = useState(null);
+  const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
+  const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
   const messagesEndRef = useRef(null);
   const inputRef = useRef(null);
+  const chatContainerRef = useRef(null);
 
   useEffect(() => {
     // Load chatbot data from localStorage or fallback to json file
@@ -33,23 +36,90 @@ function Chatbot() {
     loadChatbotData();
   }, []);
 
+  // Detect mobile device and keyboard
+  useEffect(() => {
+    const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    
+    if (!isMobile) return;
+
+    const handleResize = () => {
+      const currentHeight = window.innerHeight;
+      const heightDifference = viewportHeight - currentHeight;
+      
+      // Keyboard is likely open if height decreased by more than 150px
+      const keyboardOpen = heightDifference > 150;
+      setIsKeyboardOpen(keyboardOpen);
+      
+      if (!keyboardOpen) {
+        setViewportHeight(currentHeight);
+      }
+    };
+
+    const handleFocusIn = () => {
+      setTimeout(() => {
+        setIsKeyboardOpen(true);
+        // Scroll input into view on keyboard open
+        setTimeout(() => {
+          inputRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }, 300);
+      }, 100);
+    };
+
+    const handleFocusOut = () => {
+      setTimeout(() => {
+        setIsKeyboardOpen(false);
+        setViewportHeight(window.innerHeight);
+      }, 100);
+    };
+
+    // iOS specific handling
+    if (isIOS) {
+      window.addEventListener('resize', handleResize, { passive: true });
+      document.addEventListener('focusin', handleFocusIn);
+      document.addEventListener('focusout', handleFocusOut);
+    } else {
+      // Android and other mobile devices
+      window.addEventListener('resize', handleResize, { passive: true });
+    }
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      document.removeEventListener('focusin', handleFocusIn);
+      document.removeEventListener('focusout', handleFocusOut);
+    };
+  }, [viewportHeight]);
+
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
 
   // Focus input when chat opens
   useEffect(() => {
+    const isMobile = window.innerWidth < 768;
+    
     if (isOpen) {
-      // Delay focus on iOS to prevent viewport issues
+      // Add body class for mobile styling
+      if (isMobile) {
+        document.body.classList.add('chatbot-open');
+      }
+      
+      // Delay focus to prevent viewport issues
       const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
-      const delay = isIOS ? 300 : 100;
+      const delay = isIOS ? 500 : 200;
       
       setTimeout(() => {
-        inputRef.current?.focus();
+        inputRef.current?.focus({ preventScroll: true });
       }, delay);
     } else {
-      // Only reset input when chat is closed
+      // Reset input and mobile styles when chat is closed
       setInput('');
+      setIsKeyboardOpen(false);
+      // Remove body class and reset styles
+      document.body.classList.remove('chatbot-open');
+      document.body.style.overflow = '';
+      document.body.style.position = '';
+      document.body.style.width = '';
     }
   }, [isOpen]);
 
@@ -111,6 +181,12 @@ function Chatbot() {
     const userMessage = input;
     setInput('');
 
+    // Blur input on mobile to dismiss keyboard
+    const isMobile = window.innerWidth < 768;
+    if (isMobile && inputRef.current) {
+      inputRef.current.blur();
+    }
+
     // Add user message
     setMessages(prev => [...prev, { text: userMessage, isUser: true }]);
 
@@ -120,6 +196,15 @@ function Chatbot() {
       setTimeout(() => {
         setMessages(prev => [...prev, { text: botResponse, isUser: false }]);
       }, 500);
+    }
+
+    // Re-focus input after a short delay for better UX
+    if (isMobile) {
+      setTimeout(() => {
+        if (inputRef.current && isOpen) {
+          inputRef.current.focus({ preventScroll: true });
+        }
+      }, 600);
     }
   };
 
@@ -154,9 +239,14 @@ function Chatbot() {
             <div className="fixed inset-0 bg-black bg-opacity-25" />
           </Transition.Child>
 
-          <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-end sm:items-center justify-center p-2 sm:p-4 text-center" 
-                 style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
+          <div className="fixed inset-0 overflow-hidden">
+            <div 
+              className="flex min-h-full items-end sm:items-center justify-center text-center"
+              style={{ 
+                padding: isKeyboardOpen ? '0.5rem 0.5rem 0' : '0.5rem',
+                paddingBottom: isKeyboardOpen ? '0' : 'max(0.5rem, env(safe-area-inset-bottom))'
+              }}
+            >
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -167,12 +257,25 @@ function Chatbot() {
                 leaveTo="opacity-0 scale-95 translate-y-4"
               >
                 <Dialog.Panel 
-                  className="w-full max-w-sm sm:max-w-md transform overflow-hidden rounded-2xl sm:rounded-2xl rounded-b-none sm:rounded-b-2xl bg-white shadow-xl transition-all flex flex-col"
+                  ref={chatContainerRef}
+                  className="w-full max-w-sm sm:max-w-md transform overflow-hidden bg-white shadow-xl transition-all flex flex-col"
                   style={{ 
                     border: '1px solid #f4efe7',
-                    maxHeight: 'calc(100vh - 2rem)',
-                    minHeight: 'min(60vh, 400px)',
-                    marginBottom: 'env(safe-area-inset-bottom)'
+                    borderRadius: isKeyboardOpen ? '1rem 1rem 0 0' : '1rem',
+                    height: isKeyboardOpen 
+                      ? `${Math.min(window.innerHeight * 0.7, 500)}px`
+                      : 'auto',
+                    maxHeight: isKeyboardOpen 
+                      ? `${Math.min(window.innerHeight * 0.7, 500)}px`
+                      : 'calc(100vh - 2rem)',
+                    minHeight: isKeyboardOpen 
+                      ? `${Math.min(window.innerHeight * 0.4, 300)}px`
+                      : 'min(60vh, 400px)',
+                    marginBottom: isKeyboardOpen ? '0' : 'env(safe-area-inset-bottom)',
+                    position: isKeyboardOpen ? 'fixed' : 'relative',
+                    bottom: isKeyboardOpen ? '0' : 'auto',
+                    left: isKeyboardOpen ? '0.5rem' : 'auto',
+                    right: isKeyboardOpen ? '0.5rem' : 'auto'
                   }}
                 >
                   {/* Header */}
@@ -194,7 +297,13 @@ function Chatbot() {
                   </div>          
             
                   {/* Messages container */}
-                  <div className="flex-1 overflow-y-auto p-4 sm:p-6 bg-gradient-to-b from-gray-50 to-gray-100 min-h-0">
+                  <div 
+                    className="flex-1 overflow-y-auto p-4 sm:p-6 bg-gradient-to-b from-gray-50 to-gray-100 min-h-0"
+                    style={{
+                      WebkitOverflowScrolling: 'touch',
+                      maxHeight: isKeyboardOpen ? 'calc(100% - 140px)' : 'none'
+                    }}
+                  >
                     {messages.length === 0 ? (
                       <div className="text-center text-gray-500 mt-8">
                         <ChatBubbleLeftRightIcon className="h-12 w-12 mx-auto mb-3 opacity-50" />
@@ -229,10 +338,16 @@ function Chatbot() {
 
                   {/* Input form */}
                   <div 
-                    className="px-4 sm:px-6 py-3 sm:py-4 border-t bg-white flex-shrink-0"
+                    className="border-t bg-white flex-shrink-0"
                     style={{ 
                       borderColor: '#f4efe7',
-                      paddingBottom: 'max(0.75rem, calc(0.75rem + env(safe-area-inset-bottom)))'
+                      padding: isKeyboardOpen ? '12px 16px' : '16px 24px',
+                      paddingBottom: isKeyboardOpen 
+                        ? '12px' 
+                        : `max(0.75rem, calc(0.75rem + env(safe-area-inset-bottom)))`,
+                      position: isKeyboardOpen ? 'sticky' : 'relative',
+                      bottom: isKeyboardOpen ? '0' : 'auto',
+                      zIndex: 10
                     }}
                   >
                     <form onSubmit={handleSubmit} className="flex gap-2 sm:gap-3">
@@ -241,27 +356,61 @@ function Chatbot() {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder="Type your message..."
-                        className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none text-gray-900 bg-white text-sm sm:text-base"
+                        className="flex-1 px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none text-gray-900 bg-white text-base"
                         style={{ 
                           borderColor: '#f4efe7',
-                          focusBorderColor: '#905a39',
-                          minHeight: '44px'
+                          minHeight: '48px',
+                          fontSize: '16px', // Prevent zoom on iOS
+                          WebkitAppearance: 'none',
+                          borderRadius: '12px',
+                          WebkitBorderRadius: '12px'
                         }}
-                        onFocus={(e) => e.target.style.borderColor = '#905a39'}
-                        onBlur={(e) => e.target.style.borderColor = '#f4efe7'}
+                        onFocus={(e) => {
+                          e.target.style.borderColor = '#905a39';
+                          // Prevent body scroll when input is focused on mobile
+                          if (window.innerWidth < 768) {
+                            document.body.style.overflow = 'hidden';
+                            document.body.style.position = 'fixed';
+                            document.body.style.width = '100%';
+                          }
+                        }}
+                        onBlur={(e) => {
+                          e.target.style.borderColor = '#f4efe7';
+                          // Restore body scroll
+                          document.body.style.overflow = '';
+                          document.body.style.position = '';
+                          document.body.style.width = '';
+                        }}
                         ref={inputRef}
+                        autoComplete="off"
+                        autoCorrect="off"
+                        autoCapitalize="none"
+                        spellCheck="false"
+                        inputMode="text"
                       />
                       <button
                         type="submit"
                         disabled={!input.trim()}
-                        className="px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold text-white rounded-xl border-2 border-transparent transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                        className="px-5 py-3 text-sm font-semibold text-white rounded-xl border-2 border-transparent transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap flex items-center justify-center touch-manipulation"
                         style={{ 
                           backgroundColor: '#8f5a39',
-                          minHeight: '44px',
-                          minWidth: '60px'
+                          minHeight: '48px',
+                          minWidth: '70px',
+                          borderRadius: '12px',
+                          WebkitBorderRadius: '12px',
+                          WebkitAppearance: 'none',
+                          WebkitTouchCallout: 'none',
+                          WebkitUserSelect: 'none'
+                        }}
+                        onTouchStart={(e) => {
+                          // Improve touch responsiveness
+                          e.currentTarget.style.backgroundColor = '#7a4d32';
+                        }}
+                        onTouchEnd={(e) => {
+                          e.currentTarget.style.backgroundColor = '#8f5a39';
                         }}
                       >
-                        Send
+                        <span>Send</span>
                       </button>
                     </form>
                   </div>

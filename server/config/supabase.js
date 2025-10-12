@@ -1,8 +1,12 @@
 const { createClient } = require('@supabase/supabase-js');
 
-// Supabase configuration
-const SUPABASE_URL = process.env.SUPABASE_URL;
-const SUPABASE_ANON_KEY = process.env.SUPABASE_ANON_KEY;
+// Supabase configuration - get fresh values each time
+const getSupabaseCredentials = () => {
+  return {
+    url: process.env.SUPABASE_URL,
+    key: process.env.SUPABASE_ANON_KEY
+  };
+};
 
 let supabase = null;
 let isSupabaseAvailable = false;
@@ -10,15 +14,18 @@ let isSupabaseAvailable = false;
 // Initialize Supabase client
 const initializeSupabase = async () => {
   try {
-    if (!SUPABASE_URL || !SUPABASE_ANON_KEY) {
+    const { url, key } = getSupabaseCredentials();
+    
+    if (!url || !key) {
       console.log('Supabase credentials not found, using file system fallback');
+      console.log('URL set:', !!url, 'Key set:', !!key);
       return false;
     }
 
-    supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    supabase = createClient(url, key);
     
-    // Test connection by trying to fetch from a test table or any existing table
-    await supabase.from('leaderboard').select('count', { count: 'exact', head: true });
+    // Test connection by trying to fetch from json_documents table
+    await supabase.from('json_documents').select('doc_type').limit(1);
     
     isSupabaseAvailable = true;
     console.log('Supabase initialized successfully');

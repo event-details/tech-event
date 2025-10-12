@@ -5,6 +5,61 @@ const { getSupabaseClient, isSupabaseReady } = require('../config/supabase');
 const DATA_FILE = path.join(__dirname, '..', 'data', 'data.json');
 const CHATBOT_FILE = path.join(__dirname, '..', 'data', 'chatbotData.json');
 
+// Helper function to preserve object key order
+const preserveKeyOrder = (obj) => {
+  if (Array.isArray(obj)) {
+    return obj.map(preserveKeyOrder);
+  } else if (obj !== null && typeof obj === 'object') {
+    // Create a new object with preserved key order
+    const orderedObj = {};
+    
+    // Define the desired key order for different object types
+    const keyOrders = {
+      // For event row objects
+      eventRow: ['Start', 'End', 'Category', 'Topic', 'Speakers'],
+      // For event data objects
+      eventData: ['title', 'subtitle', 'date', 'venue', 'email', 'feedbackLink', 'rows', 'speakers'],
+      // For chatbot response objects  
+      chatbotResponse: ['keywords', 'answer', 'triggerBreakBot'],
+      // For main chatbot data
+      chatbotData: ['responses', 'fallback']
+    };
+    
+    // Determine object type and apply appropriate ordering
+    const keys = Object.keys(obj);
+    let orderedKeys = keys;
+    
+    // Check if this is an event row (has Start/End)
+    if (keys.includes('Start') && keys.includes('End')) {
+      orderedKeys = keyOrders.eventRow.filter(key => keys.includes(key))
+        .concat(keys.filter(key => !keyOrders.eventRow.includes(key)));
+    }
+    // Check if this is event data (has title/subtitle)
+    else if (keys.includes('title') && keys.includes('subtitle')) {
+      orderedKeys = keyOrders.eventData.filter(key => keys.includes(key))
+        .concat(keys.filter(key => !keyOrders.eventData.includes(key)));
+    }
+    // Check if this is a chatbot response (has keywords/answer)
+    else if (keys.includes('keywords') && keys.includes('answer')) {
+      orderedKeys = keyOrders.chatbotResponse.filter(key => keys.includes(key))
+        .concat(keys.filter(key => !keyOrders.chatbotResponse.includes(key)));
+    }
+    // Check if this is main chatbot data (has responses/fallback)
+    else if (keys.includes('responses') && keys.includes('fallback')) {
+      orderedKeys = keyOrders.chatbotData.filter(key => keys.includes(key))
+        .concat(keys.filter(key => !keyOrders.chatbotData.includes(key)));
+    }
+    
+    // Build ordered object
+    orderedKeys.forEach(key => {
+      orderedObj[key] = preserveKeyOrder(obj[key]);
+    });
+    
+    return orderedObj;
+  }
+  return obj;
+};
+
 class DataService {
   // Get event data
   static async getEventData() {
@@ -14,8 +69,8 @@ class DataService {
         const supabase = getSupabaseClient();
         const { data, error } = await supabase
           .from('json_documents')
-          .select('content')
-          .eq('name', 'event_data')
+          .select('content, content_ordered')
+          .eq('doc_type', 'event')
           .single();
 
         if (error) {
@@ -27,6 +82,16 @@ class DataService {
             return fileData;
           }
           throw error;
+        }
+        
+        // Use ordered content if available, otherwise fall back to JSONB content
+        if (data.content_ordered) {
+          try {
+            return JSON.parse(data.content_ordered);
+          } catch (parseError) {
+            console.log('Error parsing ordered content, using JSONB:', parseError.message);
+            return data.content;
+          }
         }
         
         return data.content;
@@ -51,24 +116,35 @@ class DataService {
       if (isSupabaseReady()) {
         console.log('Saving event data to Supabase');
         const supabase = getSupabaseClient();
+        
+        // Preserve key order before saving
+        const orderedEventData = preserveKeyOrder(eventData);
+        
+        // Use upsert with proper conflict resolution
         const { error } = await supabase
           .from('json_documents')
           .upsert({
-            name: 'event_data',
+            doc_type: 'event',
             content: eventData,
+            content_ordered: JSON.stringify(orderedEventData, null, 2),
             updated_at: new Date().toISOString()
           }, {
-            onConflict: 'name'
+            onConflict: 'doc_type'
           });
 
-        if (error) throw error;
+        if (error) {
+          console.log('Supabase upsert error:', error);
+          throw error;
+        }
         
-        // Also save to file as backup
-        await this.saveEventDataToFile(eventData);
+        console.log('✅ Successfully saved event data to Supabase');
+        
+        // Also save to file as backup with preserved order
+        await this.saveEventDataToFile(orderedEventData);
         return true;
       } else {
         console.log('Saving event data to file system');
-        return await this.saveEventDataToFile(eventData);
+        return await this.saveEventDataToFile(preserveKeyOrder(eventData));
       }
     } catch (error) {
       console.log('Error saving event data to Supabase, falling back to file:', {
@@ -77,7 +153,7 @@ class DataService {
         hint: error.hint || '',
         code: error.code || ''
       });
-      return await this.saveEventDataToFile(eventData);
+      return await this.saveEventDataToFile(preserveKeyOrder(eventData));
     }
   }
 
@@ -89,8 +165,8 @@ class DataService {
         const supabase = getSupabaseClient();
         const { data, error } = await supabase
           .from('json_documents')
-          .select('content')
-          .eq('name', 'chatbot_data')
+          .select('content, content_ordered')
+          .eq('doc_type', 'chatbot')
           .single();
 
         if (error) {
@@ -102,6 +178,16 @@ class DataService {
             return fileData;
           }
           throw error;
+        }
+        
+        // Use ordered content if available, otherwise fall back to JSONB content
+        if (data.content_ordered) {
+          try {
+            return JSON.parse(data.content_ordered);
+          } catch (parseError) {
+            console.log('Error parsing ordered content, using JSONB:', parseError.message);
+            return data.content;
+          }
         }
         
         return data.content;
@@ -126,24 +212,35 @@ class DataService {
       if (isSupabaseReady()) {
         console.log('Saving chatbot data to Supabase');
         const supabase = getSupabaseClient();
+        
+        // Preserve key order before saving
+        const orderedChatbotData = preserveKeyOrder(chatbotData);
+        
+        // Use upsert with proper conflict resolution
         const { error } = await supabase
           .from('json_documents')
           .upsert({
-            name: 'chatbot_data',
+            doc_type: 'chatbot',
             content: chatbotData,
+            content_ordered: JSON.stringify(orderedChatbotData, null, 2),
             updated_at: new Date().toISOString()
           }, {
-            onConflict: 'name'
+            onConflict: 'doc_type'
           });
 
-        if (error) throw error;
+        if (error) {
+          console.log('Supabase upsert error:', error);
+          throw error;
+        }
         
-        // Also save to file as backup
-        await this.saveChatbotDataToFile(chatbotData);
+        console.log('✅ Successfully saved chatbot data to Supabase');
+        
+        // Also save to file as backup with preserved order
+        await this.saveChatbotDataToFile(orderedChatbotData);
         return true;
       } else {
         console.log('Saving chatbot data to file system');
-        return await this.saveChatbotDataToFile(chatbotData);
+        return await this.saveChatbotDataToFile(preserveKeyOrder(chatbotData));
       }
     } catch (error) {
       console.log('Error saving chatbot data to Supabase, falling back to file:', {
@@ -152,7 +249,7 @@ class DataService {
         hint: error.hint || '',
         code: error.code || ''
       });
-      return await this.saveChatbotDataToFile(chatbotData);
+      return await this.saveChatbotDataToFile(preserveKeyOrder(chatbotData));
     }
   }
 
@@ -170,7 +267,9 @@ class DataService {
   static async saveEventDataToFile(eventData) {
     try {
       const tempFile = DATA_FILE + '.tmp';
-      await fs.writeFile(tempFile, JSON.stringify(eventData, null, 2));
+      // Ensure key order is preserved when writing to file
+      const orderedData = preserveKeyOrder(eventData);
+      await fs.writeFile(tempFile, JSON.stringify(orderedData, null, 2));
       await fs.rename(tempFile, DATA_FILE);
       return true;
     } catch (error) {
@@ -193,7 +292,9 @@ class DataService {
   static async saveChatbotDataToFile(chatbotData) {
     try {
       const tempFile = CHATBOT_FILE + '.tmp';
-      await fs.writeFile(tempFile, JSON.stringify(chatbotData, null, 2));
+      // Ensure key order is preserved when writing to file
+      const orderedData = preserveKeyOrder(chatbotData);
+      await fs.writeFile(tempFile, JSON.stringify(orderedData, null, 2));
       await fs.rename(tempFile, CHATBOT_FILE);
       return true;
     } catch (error) {

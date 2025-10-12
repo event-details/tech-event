@@ -15,7 +15,18 @@ function ChatAnswersForm() {
         const data = await response.json();
         setJsonData(JSON.stringify(data, null, 2));
       } catch (error) {
-        toast.error('Error loading chatbot data');
+        toast.error('Error loading chatbot data', {
+          style: {
+            border: '1px solid #dc2626',
+            padding: '16px',
+            color: '#dc2626',
+            backgroundColor: '#FEF2F2',
+          },
+          iconTheme: {
+            primary: '#dc2626',
+            secondary: '#FFFFFF',
+          },
+        });
         console.error('Error loading chatbot data:', error);
       }
     };
@@ -23,7 +34,7 @@ function ChatAnswersForm() {
     loadChatbotData();
   }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     
     try {
@@ -49,13 +60,48 @@ function ChatAnswersForm() {
         }
       });
 
-      // Save to localStorage
+      // Save to server/Supabase first
+      const response = await fetch('/api/chatbot-data', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(parsedData),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to save to server');
+      }
+
+      // Save to localStorage as backup
       localStorage.setItem('chatbotData', JSON.stringify(parsedData));
       
-      toast.success('Chatbot responses updated successfully!');
+      toast.success('Successfully updated chatbot responses!', {
+        style: {
+          border: '1px solid #10B981',
+          padding: '16px',
+          color: '#059669',
+          backgroundColor: '#F0FDF4',
+        },
+        iconTheme: {
+          primary: '#10B981',
+          secondary: '#FFFFFF',
+        },
+      });
       navigate('/');
     } catch (error) {
-      toast.error(error.message || 'Invalid JSON format');
+      toast.error(error.message || 'Invalid JSON format', {
+        style: {
+          border: '1px solid #dc2626',
+          padding: '16px',
+          color: '#dc2626',
+          backgroundColor: '#FEF2F2',
+        },
+        iconTheme: {
+          primary: '#dc2626',
+          secondary: '#FFFFFF',
+        },
+      });
     }
   };
 

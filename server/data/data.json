@@ -1,11 +1,11 @@
 {
   "eventData": {
     "title": "TECH MEETUP 25",
-    "subtitle": "An Marquee AI Event",
-    "date": "16 October 2025",
-    "venue": "ETV 9, BTC , Benagaluru",
+    "subtitle": "A Marquee AI Event",
+    "date": "October 16, 2025",
+    "venue": "ETV9, BTC, Bengaluru",
     "email": "avtrixx@gmail.com",
-    "feedbackLink": "https://tech-event-uayd.onrender.com",
+    "feedbackLink": "https://tech-event-uayd.onrender.com/",
     "rows": [
       {
         "Start": "9:00 AM",
@@ -98,15 +98,93 @@
         "Category": "Q&A/Summarization",
         "Topic": "TEDx summarization",
         "Speakers": "Naureen Fatima"
+      },
+      {
+        "Start": "02:30 PM",
+        "End": "03:30 PM",
+        "Category": "Gamification + Cyber session",
+        "Topic": "Secure AI",
+        "Speakers": "Navaneetharangan Chakravarthy, Avirag, Soundarya"
+      },
+      {
+        "Start": "03:30 PM",
+        "End": "03:45 PM",
+        "Category": "Break-Tea/Cofee",
+        "Topic": "NA",
+        "Speakers": "NA"
+      },
+      {
+        "Start": "03:45 PM",
+        "End": "03:55 PM",
+        "Category": "What's New",
+        "Topic": "GT Assist",
+        "Speakers": "NA"
+      },
+      {
+        "Start": "03:45 PM",
+        "End": "03:55 PM",
+        "Category": "What's New",
+        "Topic": "JASPER",
+        "Speakers": "Kumaran Kanan"
+      },
+      {
+        "Start": "03:55 PM",
+        "End": "04:05 PM",
+        "Category": "What's New",
+        "Topic": "DEV GPT",
+        "Speakers": "Nikunj Raval"
+      },
+      {
+        "Start": "04:05 PM",
+        "End": "04:15 PM",
+        "Category": "What's New",
+        "Topic": "GT Assist",
+        "Speakers": "NA"
+      },
+      {
+        "Start": "04:15 PM",
+        "End": "04:25 PM",
+        "Category": "Lightning Talk",
+        "Topic": "Infra[Atlas 2.0]",
+        "Speakers": "Paul Sephered & Myron Wieneke"
+      },
+      {
+        "Start": "04:25 PM",
+        "End": "04:35 PM",
+        "Category": "Lightning Talk",
+        "Topic": "Agentic Approach to true CD Testing practices",
+        "Speakers": "Pradeep Hodigere"
+      },
+      {
+        "Start": "04:35 PM",
+        "End": "04:45 PM",
+        "Category": "Lightning Talk",
+        "Topic": "Connect Coach",
+        "Speakers": "Puneet Sharma"
+      },
+      {
+        "Start": "04:45 PM",
+        "End": "04:55 PM",
+        "Category": "Lightning Talk",
+        "Topic": "CIB - AI for Ops",
+        "Speakers": "RK"
+      },
+      {
+        "Start": "04:55 PM",
+        "End": "05:10 PM",
+        "Category": "Closing Note, Key Actions, Vote of thanks",
+        "Topic": "",
+        "Speakers": "Sanketh Bhat"
+      },
+      {
+        "Start": "05:10 PM",
+        "End": "05:40 PM",
+        "Category": "Networking - hi Tea",
+        "Topic": "Refreshments",
+        "Speakers": ""
       }
     ],
     "speakers": [
-      {
-        "Speaker": "Avirag Gautam",
-        "Title": "AVP Software Development",
-        "Company": "Tech Corp",
-        "Bio": "Great Software developer with 10+ years of experience in full-stack development and AI technologies."
-      },
       {
         "Speaker": "Deepak Mitra",
         "Title": "Senior Technology Lead",
@@ -114,10 +192,142 @@
         "Bio": "Expert in opening ceremonies and agenda management with a passion for event coordination."
       },
       {
+        "Speaker": "Naureen Fatima",
+        "Title": "Emcee / Moderator",
+        "Company": "Event Host",
+        "Bio": "Experienced emcee guiding sessions, personal stories, and Q&A summarization."
+      },
+      {
+        "Speaker": "MK Ullah",
+        "Title": "Tech Expert",
+        "Company": "Innovation Labs",
+        "Bio": "Provides context setting and technical insights for AI-focused events."
+      },
+      {
+        "Speaker": "Shreevyas",
+        "Title": "Keynote Speaker",
+        "Company": "AI Specialist",
+        "Bio": "Renowned expert delivering keynote on AI and its industry impact."
+      },
+      {
+        "Speaker": "Dr. Jaiganesh",
+        "Title": "Industry Expert",
+        "Company": "JPMC",
+        "Bio": "Participant in Fireside Chat discussing industry innovations and AI."
+      },
+      {
+        "Speaker": "Karthikeya",
+        "Title": "Industry Expert",
+        "Company": "JPMC",
+        "Bio": "Participant in Fireside Chat discussing industry innovations and AI."
+      },
+      {
+        "Speaker": "Joseph Jeune",
+        "Title": "Industry Expert",
+        "Company": "JPMC",
+        "Bio": "Participant in Fireside Chat discussing industry innovations and AI."
+      },
+      {
+        "Speaker": "Naveen Xavier",
+        "Title": "Industry Expert",
+        "Company": "JPMC",
+        "Bio": "Participant in Fireside Chat discussing industry innovations and AI."
+      },
+      {
         "Speaker": "Saurabh Mishra",
         "Title": "MD & Technology Evangelist",
         "Company": "Future Tech",
         "Bio": "Visionary leader specializing in TEDx-style presentations and mind-sharing sessions."
+      },
+      {
+        "Speaker": "Ganapathy Subramanian",
+        "Title": "Leader / Presenter",
+        "Company": "Future Tech",
+        "Bio": "TEDx-style MD Update session speaker on innovation and strategy."
+      },
+      {
+        "Speaker": "Prashant Mekaraj",
+        "Title": "Leader / Presenter",
+        "Company": "Future Tech",
+        "Bio": "TEDx-style MD Update session speaker on innovation and strategy."
+      },
+      {
+        "Speaker": "Shivaprsada Baburao",
+        "Title": "Leader / Presenter",
+        "Company": "Future Tech",
+        "Bio": "TEDx-style MD Update session speaker on innovation and strategy."
+      },
+      {
+        "Speaker": "Shyamala Popuri",
+        "Title": "Leader / Presenter",
+        "Company": "Future Tech",
+        "Bio": "TEDx-style MD Update session speaker on innovation and strategy."
+      },
+      {
+        "Speaker": "Navaneetharangan Chakravarthy",
+        "Title": "Cybersecurity Expert",
+        "Company": "Tech Corp",
+        "Bio": "Speaker on Gamification + Cyber session and Secure AI."
+      },
+      {
+        "Speaker": "Avirag",
+        "Title": "AVP Software Development",
+        "Company": "Tech Corp",
+        "Bio": "Great Software developer with 10+ years of experience in full-stack development and AI technologies."
+      },
+      {
+        "Speaker": "Soundarya",
+        "Title": "Tech Presenter",
+        "Company": "Tech Corp",
+        "Bio": "Speaker on Gamification + Cyber session and Secure AI."
+      },
+      {
+        "Speaker": "Kumaran Kanan",
+        "Title": "Tech Presenter",
+        "Company": "Innovation Labs",
+        "Bio": "Speaker on What's New session: JASPER."
+      },
+      {
+        "Speaker": "Nikunj Raval",
+        "Title": "Tech Presenter",
+        "Company": "Innovation Labs",
+        "Bio": "Speaker on What's New session: DEV GPT."
+      },
+      {
+        "Speaker": "Paul Sephered",
+        "Title": "Infra Expert",
+        "Company": "Tech Corp",
+        "Bio": "Lightning Talk speaker on Infra[Atlas 2.0]."
+      },
+      {
+        "Speaker": "Myron Wieneke",
+        "Title": "Infra Expert",
+        "Company": "Tech Corp",
+        "Bio": "Lightning Talk speaker on Infra[Atlas 2.0]."
+      },
+      {
+        "Speaker": "Pradeep Hodigere",
+        "Title": "Tech Presenter",
+        "Company": "Tech Corp",
+        "Bio": "Lightning Talk speaker on Agentic Approach to true CD Testing practices."
+      },
+      {
+        "Speaker": "Puneet Sharma",
+        "Title": "Tech Presenter",
+        "Company": "Tech Corp",
+        "Bio": "Lightning Talk speaker on Connect Coach."
+      },
+      {
+        "Speaker": "RK",
+        "Title": "Tech Presenter",
+        "Company": "Tech Corp",
+        "Bio": "Lightning Talk speaker on CIB - AI for Ops."
+      },
+      {
+        "Speaker": "Sanketh Bhat",
+        "Title": "Event Closing Speaker",
+        "Company": "Tech Corp",
+        "Bio": "Provides closing note, key actions, and vote of thanks."
       }
     ]
   }
