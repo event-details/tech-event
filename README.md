@@ -83,12 +83,27 @@ npm start
 
 ### Deployment
 
-For external hosting:
+#### For Render.com:
+
+**Build Command:**
 ```bash
-npm run deploy
+npm run build
 ```
 
-This builds the client and starts the production server.
+**Start Command:**
+```bash
+npm start
+```
+
+#### Environment Variables Required:
+- `SUPABASE_URL` - Your Supabase project URL
+- `SUPABASE_ANON_KEY` - Your Supabase anonymous key
+- `ADMIN_PASSWORD` - Admin authentication password
+
+#### For other hosting providers:
+```bash
+npm run build && npm start
+```
 
 ## Features
 

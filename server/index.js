@@ -204,13 +204,13 @@ app.delete('/api/leaderboard', async (req, res) => {
 
 // Serve static files in production
 if (isProduction) {
-  // Serve static files from the dist directory
-  app.use(express.static(path.join(__dirname, 'dist')));
+  // Serve static files from the client dist directory
+  app.use(express.static(path.join(__dirname, '../client/dist')));
 
   // Handle client-side routing by serving index.html for all non-API routes
   app.get('*', (req, res) => {
     if (!req.path.startsWith('/api')) {
-      res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+      res.sendFile(path.join(__dirname, '../client/dist', 'index.html'));
     }
   });
 }

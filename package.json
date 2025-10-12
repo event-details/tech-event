@@ -11,7 +11,7 @@
     "dev-server": "cd server && npm run dev",
     "build": "cd client && npm run build",
     "start": "cd server && NODE_ENV=production npm start",
-    "postinstall": "npm run install-all"
+    "postinstall": "npm run install-all && npm run build"
   },
   "author": "Avirag Gautam",
   "homepage": "https://tech-event-uayd.onrender.com",
@@ -35,6 +35,7 @@
   "dependencies": {
     "concurrently": "^9.2.1"
   },
+  "devDependencies": {},
   "browserslist": {
     "production": [
       ">0.2%",
