@@ -40,13 +40,42 @@ function Chatbot() {
   // Focus input when chat opens
   useEffect(() => {
     if (isOpen) {
+      // Delay focus on iOS to prevent viewport issues
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+      const delay = isIOS ? 300 : 100;
+      
       setTimeout(() => {
         inputRef.current?.focus();
-      }, 100);
+      }, delay);
     } else {
       // Only reset input when chat is closed
       setInput('');
     }
+  }, [isOpen]);
+
+  // Handle iOS viewport adjustments
+  useEffect(() => {
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+    if (!isIOS) return;
+
+    const handleResize = () => {
+      // Force a reflow to handle iOS keyboard behavior
+      document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+    };
+
+    if (isOpen) {
+      handleResize();
+      window.addEventListener('resize', handleResize);
+      // Prevent background scrolling on iOS
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      document.body.style.overflow = '';
+    };
   }, [isOpen]);
 
   const processMessage = (userMessage) => {
@@ -126,7 +155,8 @@ function Chatbot() {
           </Transition.Child>
 
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-end sm:items-center justify-center p-3 sm:p-4 text-center">
+            <div className="flex min-h-full items-end sm:items-center justify-center p-2 sm:p-4 text-center" 
+                 style={{ paddingBottom: 'max(0.5rem, env(safe-area-inset-bottom))' }}>
               <Transition.Child
                 as={Fragment}
                 enter="ease-out duration-300"
@@ -140,8 +170,9 @@ function Chatbot() {
                   className="w-full max-w-sm sm:max-w-md transform overflow-hidden rounded-2xl sm:rounded-2xl rounded-b-none sm:rounded-b-2xl bg-white shadow-xl transition-all flex flex-col"
                   style={{ 
                     border: '1px solid #f4efe7',
-                    maxHeight: '85vh',
-                    minHeight: '60vh'
+                    maxHeight: 'calc(100vh - 2rem)',
+                    minHeight: 'min(60vh, 400px)',
+                    marginBottom: 'env(safe-area-inset-bottom)'
                   }}
                 >
                   {/* Header */}
@@ -199,7 +230,10 @@ function Chatbot() {
                   {/* Input form */}
                   <div 
                     className="px-4 sm:px-6 py-3 sm:py-4 border-t bg-white flex-shrink-0"
-                    style={{ borderColor: '#f4efe7' }}
+                    style={{ 
+                      borderColor: '#f4efe7',
+                      paddingBottom: 'max(0.75rem, calc(0.75rem + env(safe-area-inset-bottom)))'
+                    }}
                   >
                     <form onSubmit={handleSubmit} className="flex gap-2 sm:gap-3">
                       <input
@@ -207,10 +241,11 @@ function Chatbot() {
                         value={input}
                         onChange={(e) => setInput(e.target.value)}
                         placeholder="Type your message..."
-                        className="flex-1 px-3 sm:px-4 py-2 sm:py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none text-gray-900 bg-white text-sm sm:text-base"
+                        className="flex-1 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none text-gray-900 bg-white text-sm sm:text-base"
                         style={{ 
                           borderColor: '#f4efe7',
-                          focusBorderColor: '#905a39'
+                          focusBorderColor: '#905a39',
+                          minHeight: '44px'
                         }}
                         onFocus={(e) => e.target.style.borderColor = '#905a39'}
                         onBlur={(e) => e.target.style.borderColor = '#f4efe7'}
@@ -219,8 +254,12 @@ function Chatbot() {
                       <button
                         type="submit"
                         disabled={!input.trim()}
-                        className="px-4 sm:px-6 py-2 sm:py-3 text-xs sm:text-sm font-semibold text-white rounded-xl border-2 border-transparent transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
-                        style={{ backgroundColor: '#8f5a39' }}
+                        className="px-4 sm:px-6 py-2.5 sm:py-3 text-xs sm:text-sm font-semibold text-white rounded-xl border-2 border-transparent transition-all duration-200 hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed whitespace-nowrap"
+                        style={{ 
+                          backgroundColor: '#8f5a39',
+                          minHeight: '44px',
+                          minWidth: '60px'
+                        }}
                       >
                         Send
                       </button>
