@@ -1,0 +1,67 @@
+{
+  "responses": [
+    {
+      "keywords": ["hi", "hello", "hey", "good morning", "good afternoon", "good evening", "greetings"],
+      "answers": [
+        "Hello there! 👋 Welcome to TECH MEETUP 25 — how can I help you today?",
+        "Hi! 🌟 Great to see you at TECH MEETUP 25! What would you like to know?",
+        "Hey there! 👋 Welcome! I'm here to help with any questions about the event.",
+        "Greetings! ✨ Welcome to TECH MEETUP 25! How can I assist you today?"
+      ],
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": ["what", "is", "tech meetup", "tech meetup 2025", "about", "event"],
+      "answers": [
+        "TECH MEETUP 25 is a marquee AI event bringing together top technology leaders, innovators, and developers to share insights, stories, and advancements in Artificial Intelligence and software development.",
+        "TECH MEETUP 25 is an exclusive gathering of AI enthusiasts and tech professionals sharing cutting-edge insights and innovations.",
+        "This is TECH MEETUP 25 - a premier AI-focused event where industry leaders discuss the latest in artificial intelligence and technology trends."
+      ],
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": ["when", "where", "date", "venue", "location", "place"],
+      "answers": [
+        "The event takes place on 16 October 2025 at ETV 9, BTC, Bengaluru.",
+        "Mark your calendar! We're meeting on 16 October 2025 at ETV 9, BTC, Bengaluru.",
+        "Join us on 16 October 2025 at ETV 9, BTC, Bengaluru for this amazing event!",
+        "Date: 16 October 2025 | Venue: ETV 9, BTC, Bengaluru"
+      ],
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": ["agenda", "schedule", "sessions", "timetable", "program", "event plan"],
+      "answers": [
+        "Here’s the event agenda:\n- 9:00–10:00 AM: Breakfast\n- 10:00–10:05 AM: Opening & Agenda Overview (Deepak Mitra)\n- 10:05–10:10 AM: Personal Story & Journey (Naureen Fatima)\n- 10:10–10:30 AM: Context Setting (MK Ullah)\n- 10:30–11:30 AM: Keynote on AI (Shreevyas)\n- 11:30–12:30 PM: Fireside Chat moderated by Samdeep Nayak with Dr. Jaiganesh, Karthikeya, Joseph Jeune, and Naveen Xavier [JPMC]\n- 12:30–1:30 PM: Lunch\n- 1:30–2:20 PM: TEDx-style MD Updates by Saurabh Mishra, Ganapathy Subramanian, Prashant Mekaraj, Shivaprsada Baburao, and Shyamala Popuri\n- 2:20–2:30 PM: TEDx Summarization & Q&A (Naureen Fatima)"
+      ],
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": ["timings", "time", "start", "end", "duration"],
+      "answers": [
+        "The event begins at 9:00 AM and concludes at 2:30 PM on 16 October 2025. Each session runs between 5 to 60 minutes as per the agenda.",
+        "We start bright and early at 9:00 AM and wrap up by 2:30 PM - a full day of amazing content!",
+        "Event hours: 9:00 AM to 2:30 PM. Perfect timing for a productive day of learning and networking!"
+      ],
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": ["contact", "support", "help", "query", "who to reach"],
+      "answers": [
+        "For event support, please contact the organizing team at Reception.",
+        "Need assistance? Reach out to our team at Reception - we're here to help!"
+      ],
+      "triggerBreakBot": false
+    },
+    {
+      "keywords": ["lunch", "lunch menu", "food", "meal", "breakfast", "breakfast menu", "dining", "catering"],
+      "answers": [
+        "We have delicious breakfast from 9:00-10:00 AM and lunch from 12:30-1:30 PM included in the event!",
+        "Food is provided! Breakfast kicks off the day (9:00-10:00 AM) and lunch is served from 12:30-1:30 PM.",
+        "Great news! We've got you covered with breakfast (9:00-10:00 AM) and lunch (12:30-1:30 PM) during the event."
+      ],
+      "triggerBreakBot": false
+    }
+  ],
+  "fallback": "I'm sorry, I don't have information about that. Please try asking about the schedule, venue, or speakers."
+}

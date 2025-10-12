@@ -1,53 +1,230 @@
-# Tailwind CSS Components for React - TailGrids React
+# Tech Meet Event Management System
 
-TailGrids React is **Tailwind UI Components for React** Web Projects. This version is free open-source **TailGrids Core that coded specifically for React**, so anyone can use TailGrids Tailwind CSS components with your React projects flawlessly.
+A responsive React SPA for tech event management with chatbot and leaderboard features, built with React, Node.js, and Tailwind CSS.
 
-TailGrids React comes with all the essential UI components and elements you need to kickstart a new web project based on ReactJS and Tailwind CSS. This entire React + Tailwind CSS UI library - is coded using Tailwind CSS utility classes and crafted in a way that will provide the best possible developer experience.
+## System Overview
 
-[![tailgrids-react](https://cdn.tailgrids.com/tailgrids-react.png)](https://github.com/TailGrids/tailgrids-react)
+### **Architecture**
+A full-stack web application for managing tech events, built as a responsive React SPA with a Node.js backend. The system is designed specifically for tech meetups and conferences with integrated chatbot functionality and leaderboard features.
 
-So, if you're already familiar with Tailwind CSS and looking for a well-designed **React UI library**, TailGrids is the perfect choice.
+- **Frontend**: React 18 SPA using Vite as the build tool
+- **Backend**: Express.js server with Supabase integration
+- **Database**: Supabase (PostgreSQL)
+- **Styling**: Tailwind CSS with Headless UI components
+- **Deployment**: Combined deployment (frontend built and served by backend)
 
-### [🚀 Explore All Components](https://tailgrids.com/components)
+### **Key Features**
 
-### [🌏 Visit Website](https://tailgrids.com)
+#### 1. **Event Management**
+- Dynamic event information display (title, date, venue, agenda)
+- Admin panel for editing event details
+- Password-protected administrative routes
+- Responsive agenda table/card views for mobile and desktop
 
-### [📃 TailGrids React Documentation](https://tailgrids.com/docs/react)
+#### 2. **Advanced NLP Chatbot with Vulnerability Detection**
+- **Lemmatization**: Advanced text processing using compromise.js
+- **Fuzzy Search**: AI-like keyword matching with Fuse.js
+- **Randomized Responses**: Human-like conversation patterns
+- **Vulnerability Detection System**: 
+  - Detects security-related prompts (DAN, admin access, etc.)
+  - Categories vulnerabilities by type
+  - Triggers "Break Bot" modal for leaderboard submission
+- Mobile-optimized chat interface with confetti animations
 
-# Getting Started
+#### 3. **Advanced Leaderboard System**
+- Participant scoring and ranking with vulnerability categories
+- Real-time updates with category tracking
+- Interactive leaderboard display showing:
+  - Challenger name and mode
+  - **Vulnerability category** (DAN, Admin/Control, Urgency/Panic, etc.)
+  - Winning prompt used to break the bot
+  - Achievement timestamp
 
-### Installing via NPM
+#### 4. **Speakers Management**
+- Speaker profiles and information
+- Dynamic speaker listing
+- Integration with event agenda
 
-As a NPM package make sure that you have installed [Node.js](https://nodejs.org) and [Tailwind CSS](https://tailwindcss.com)
+#### 5. **Admin Features**
+- Protected routes with authentication
+- Event data editing forms
+- Chat answers management
+- Data persistence through Supabase
 
-Install TailGrids React as a dependency using NPM by running the command below:
+### **Current Configuration**
+- **Event**: "TECH MEETUP 25 - A Marquee AI Event"
+- **Date**: October 16, 2025
+- **Venue**: ETV9, BTC, Bengaluru
+- **Version**: 2.2.3
+- **Author**: Avirag Gautam
+- **Homepage**: https://tech-event-uayd.onrender.com
+
+### **Data Management**
+The application manages several data types:
+- **Event Data**: Event details, agenda, speakers
+- **Chatbot Data**: Q&A responses and keywords
+- **Leaderboard Data**: Participant scores and rankings
+
+## Project Structure
 
 ```
-npm i tailgrids-react
+tech-meet-event/
+├── client/                 # Frontend React application
+│   ├── src/               # React source files
+│   ├── public/            # Static assets
+│   ├── package.json       # Client dependencies
+│   ├── vite.config.js     # Vite configuration
+│   ├── tailwind.config.js # Tailwind CSS configuration
+│   └── postcss.config.js  # PostCSS configuration
+├── server/                # Backend Node.js server
+│   ├── index.js           # Express server
+│   ├── data/              # JSON data files
+│   └── package.json       # Server dependencies
+├── package.json           # Root package.json with scripts
+└── README.md
 ```
 
-To learn more, check out the [TailGrids React Docs](https://tailgrids.com/docs/react).
+## Getting Started
 
-## TailGrids-React : Tailwind CSS + React UI Components
+### Prerequisites
 
-[![sneak-peek](https://cdn.tailgrids.com/tailgrids-components.svg)](https://tailgrids.com/components)
+Make sure you have [Node.js](https://nodejs.org) installed (version 16 or higher).
 
-## Changelog
+### Installation
 
-### version 2.0
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd tech-meet-event
+```
 
--Dark mode added
--Polished components
--Added few core components
--Update dependency packages
+2. Install all dependencies:
+```bash
+npm run install-all
+```
 
-## 👥 Community
+Or install separately:
+```bash
+# Install client dependencies
+npm run install-client
 
-#### [💬 Chat Us on Discord](https://pimjo.com/discord)
+# Install server dependencies  
+npm run install-server
+```
 
-#### [🙌 Let's Connect on Twitter](https://twitter.com/tailgrids)
+### Development
 
-## 💙 Support
+To run both client and server in development mode:
+```bash
+npm run dev
+```
+
+This will start:
+- React development server on http://localhost:5173
+- Express API server on http://localhost:3001
+
+To run individually:
+```bash
+# Run only the client
+npm run dev-client
+
+# Run only the server
+npm run dev-server
+```
+
+### Production Build & Deployment
+
+#### Quick Deploy (Recommended)
+Use the automated deployment script:
+```bash
+./deploy.sh
+```
+
+This script will:
+- Clean up old build artifacts
+- Install all dependencies
+- Run security audit
+- Build client for production
+- Test server functionality
+- Generate deployment checklist
+
+#### Manual Build
+1. Build the client for production:
+```bash
+npm run build
+```
+
+2. Start the production server:
+```bash
+npm start
+```
+
+### Deployment
+
+#### For Render.com:
+
+**Build Command:**
+```bash
+npm run build
+```
+
+**Start Command:**
+```bash
+npm start
+```
+
+#### Environment Variables Required:
+- `SUPABASE_URL` - Your Supabase project URL
+- `SUPABASE_ANON_KEY` - Your Supabase anonymous key
+- `ADMIN_PASSWORD` - Admin authentication password
+
+#### For other hosting providers:
+```bash
+npm run build && npm start
+```
+
+## Features
+
+- **Event Management**: Display event details, agenda, and schedules
+- **Interactive Chatbot**: AI-powered assistance for event information
+- **Leaderboard System**: Track and display participant rankings
+- **Responsive Design**: Works perfectly on all devices
+- **Real-time Data**: Dynamic content updates
+
+## API Endpoints
+
+The server provides the following REST API endpoints:
+
+- `GET /api/leaderboard` - Retrieve leaderboard data
+- `POST /api/leaderboard` - Add new leaderboard entry
+- `DELETE /api/leaderboard` - Clear leaderboard (password protected)
+
+## Technology Stack
+
+**Frontend:**
+- React 18
+- Vite
+- Tailwind CSS
+- React Router
+- React Hot Toast
+
+**Backend:**
+- Node.js
+- Express.js
+- CORS enabled
+- JSON file storage
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add some amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
 
 You can always support this project and inspire us by **Starring🌟 This Repository**
 and sharing with friends. If you like the the library consider purchasing [**⚡ TailGrids Pro**](https://tailgrids.com/pricing) to get access to all available premium components.

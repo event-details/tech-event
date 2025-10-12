@@ -1,0 +1,21 @@
+{
+  "name": "tech-meet-event-server",
+  "description": "Backend server for tech event management",
+  "version": "2.2.3",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "node index.js"
+  },
+  "author": "Avirag Gautam",
+  "license": "MIT",
+  "dependencies": {
+    "@supabase/supabase-js": "^2.75.0",
+    "compromise": "^14.14.4",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.3",
+    "express": "^4.19.2",
+    "fuse.js": "^7.1.0",
+    "natural": "^8.1.0"
+  }
+}

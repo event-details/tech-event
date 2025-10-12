@@ -1,0 +1,63 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  @apply bg-gray-50 font-serif;
+}
+
+/* Mobile viewport and keyboard handling */
+@supports (-webkit-touch-callout: none) {
+  /* iOS specific styles */
+  html {
+    height: -webkit-fill-available;
+  }
+  
+  body {
+    min-height: -webkit-fill-available;
+  }
+}
+
+/* Prevent zoom on input focus in iOS */
+@media screen and (max-width: 767px) {
+  input[type="text"], 
+  input[type="email"], 
+  input[type="tel"], 
+  textarea {
+    font-size: 16px !important;
+  }
+}
+
+/* Improve touch targets on mobile */
+@media (hover: none) and (pointer: coarse) {
+  button, 
+  input[type="submit"], 
+  input[type="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}
+
+/* Chatbot specific mobile styles */
+.chatbot-container {
+  /* Ensure proper stacking and positioning */
+  position: relative;
+  z-index: 1000;
+}
+
+@media screen and (max-width: 767px) {
+  .chatbot-container {
+    /* Full screen on mobile when keyboard is open */
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+  }
+  
+  /* Prevent body scroll when chatbot is open on mobile */
+  body.chatbot-open {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
+    height: 100%;
+  }
+}
