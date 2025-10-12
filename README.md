@@ -2,6 +2,62 @@
 
 A responsive React SPA for tech event management with chatbot and leaderboard features, built with React, Node.js, and Tailwind CSS.
 
+## System Overview
+
+### **Architecture**
+A full-stack web application for managing tech events, built as a responsive React SPA with a Node.js backend. The system is designed specifically for tech meetups and conferences with integrated chatbot functionality and leaderboard features.
+
+- **Frontend**: React 18 SPA using Vite as the build tool
+- **Backend**: Express.js server with Supabase integration
+- **Database**: Supabase (PostgreSQL)
+- **Styling**: Tailwind CSS with Headless UI components
+- **Deployment**: Combined deployment (frontend built and served by backend)
+
+### **Key Features**
+
+#### 1. **Event Management**
+- Dynamic event information display (title, date, venue, agenda)
+- Admin panel for editing event details
+- Password-protected administrative routes
+- Responsive agenda table/card views for mobile and desktop
+
+#### 2. **Interactive Chatbot**
+- AI-powered chatbot with predefined responses
+- Keyword-based response system
+- "BreakBot" feature for networking breaks
+- Confetti animations for engagement
+- Mobile-optimized chat interface
+
+#### 3. **Leaderboard System**
+- Participant scoring and ranking
+- Real-time updates
+- Interactive leaderboard display
+
+#### 4. **Speakers Management**
+- Speaker profiles and information
+- Dynamic speaker listing
+- Integration with event agenda
+
+#### 5. **Admin Features**
+- Protected routes with authentication
+- Event data editing forms
+- Chat answers management
+- Data persistence through Supabase
+
+### **Current Configuration**
+- **Event**: "TECH MEETUP 25 - A Marquee AI Event"
+- **Date**: October 16, 2025
+- **Venue**: ETV9, BTC, Bengaluru
+- **Version**: 2.2.3
+- **Author**: Avirag Gautam
+- **Homepage**: https://tech-event-uayd.onrender.com
+
+### **Data Management**
+The application manages several data types:
+- **Event Data**: Event details, agenda, speakers
+- **Chatbot Data**: Q&A responses and keywords
+- **Leaderboard Data**: Participant scores and rankings
+
 ## Project Structure
 
 ```
