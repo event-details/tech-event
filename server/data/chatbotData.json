@@ -1,19 +1,35 @@
 {
   "responses": [
     {
-      "keywords": ["schedule", "agenda", "timetable"],
+      "keywords": [
+        "schedule",
+        "agenda",
+        "timetable"
+      ],
       "answer": "The event starts at 9:00 AM with an opening keynote. You can find the full schedule on the main page."
     },
     {
-      "keywords": ["venue", "location", "where"],
-      "answer": "The event is being held at the Silicon Valley Convention Center."
+      "keywords": [
+        "venue",
+        "location",
+        "where"
+      ],
+      "answer": "The event is being held at ETV 9, BTC, Bengaluru."
     },
     {
-      "keywords": ["speaker", "speakers", "who"],
-      "answer": "Our keynote speakers include Jane Smith and John Doe, among other industry experts."
+      "keywords": [
+        "speaker",
+        "speakers",
+        "who"
+      ],
+      "answer": "Our keynote speakers include industry experts and tech leaders."
     },
     {
-      "keywords": ["break the bot", "challenge accepted", "debug mode"],
+      "keywords": [
+        "break the bot",
+        "challenge accepted",
+        "debug mode"
+      ],
       "triggerBreakBot": true,
       "answer": "Congratulations! You've found a secret command! 🎉"
     }

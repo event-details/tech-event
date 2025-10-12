@@ -1,7 +1,13 @@
+// Load environment variables from .env file
+require('dotenv').config();
+
 const express = require('express');
 const fs = require('fs').promises;
 const path = require('path');
 const cors = require('cors');
+const { initializeSupabase } = require('./config/supabase');
+const LeaderboardService = require('./services/leaderboardService');
+const DataService = require('./services/dataService');
 
 const app = express();
 const PORT = process.env.PORT || 3001;
@@ -23,16 +29,13 @@ app.use((err, req, res, next) => {
   res.status(500).json({ error: 'Internal server error' });
 });
 
-// Path to data files
+// Path to data files (only leaderboard still uses direct file path for reference)
 const LEADERBOARD_FILE = path.join(__dirname, 'data', 'leaderboardData.json');
-const EVENT_DATA_FILE = path.join(__dirname, 'data', 'data.json');
-const CHATBOT_DATA_FILE = path.join(__dirname, 'data', 'chatbotData.json');
 
 // GET endpoint to retrieve event data
 app.get('/api/event-data', async (req, res) => {
   try {
-    const data = await fs.readFile(EVENT_DATA_FILE, 'utf8');
-    const eventData = JSON.parse(data);
+    const eventData = await DataService.getEventData();
     res.json(eventData);
   } catch (error) {
     console.error('Error reading event data:', error);
@@ -73,7 +76,7 @@ app.post('/api/event-data', async (req, res) => {
       }
     };
 
-    await fs.writeFile(EVENT_DATA_FILE, JSON.stringify(updatedEventData, null, 2));
+    await DataService.saveEventData(updatedEventData);
     res.json({ success: true, message: 'Event data updated successfully' });
   } catch (error) {
     console.error('Error updating event data:', error);
@@ -84,8 +87,7 @@ app.post('/api/event-data', async (req, res) => {
 // GET endpoint to retrieve chatbot data
 app.get('/api/chatbot-data', async (req, res) => {
   try {
-    const data = await fs.readFile(CHATBOT_DATA_FILE, 'utf8');
-    const chatbotData = JSON.parse(data);
+    const chatbotData = await DataService.getChatbotData();
     res.json(chatbotData);
   } catch (error) {
     console.error('Error reading chatbot data:', error);
@@ -93,11 +95,38 @@ app.get('/api/chatbot-data', async (req, res) => {
   }
 });
 
+// POST endpoint to update chatbot data
+app.post('/api/chatbot-data', async (req, res) => {
+  try {
+    const { responses, fallback } = req.body;
+    
+    // Validate required fields
+    if (!responses || !fallback) {
+      return res.status(400).json({ error: 'Responses and fallback are required' });
+    }
+
+    // Validate responses is an array
+    if (!Array.isArray(responses)) {
+      return res.status(400).json({ error: 'Responses must be an array' });
+    }
+
+    const updatedChatbotData = {
+      responses,
+      fallback
+    };
+
+    await DataService.saveChatbotData(updatedChatbotData);
+    res.json({ success: true, message: 'Chatbot data updated successfully' });
+  } catch (error) {
+    console.error('Error updating chatbot data:', error);
+    res.status(500).json({ error: 'Failed to update chatbot data' });
+  }
+});
+
 // GET endpoint to retrieve leaderboard data
 app.get('/api/leaderboard', async (req, res) => {
   try {
-    const data = await fs.readFile(LEADERBOARD_FILE, 'utf8');
-    const leaderboard = JSON.parse(data);
+    const leaderboard = await LeaderboardService.getLeaderboard();
     res.json(leaderboard);
   } catch (error) {
     console.error('Error reading leaderboard:', error);
@@ -105,18 +134,19 @@ app.get('/api/leaderboard', async (req, res) => {
   }
 });
 
-// Initialize leaderboard file if it doesn't exist
-const initializeLeaderboard = async () => {
+// Initialize on startup
+const initializeServices = async () => {
   try {
-    await fs.access(LEADERBOARD_FILE);
+    // Initialize Supabase
+    await initializeSupabase();
+    // Initialize leaderboard file as fallback
+    await LeaderboardService.initializeLeaderboardFile();
   } catch (error) {
-    // File doesn't exist, create it with initial structure
-    await fs.writeFile(LEADERBOARD_FILE, JSON.stringify({ leaderboard: [] }, null, 2));
+    console.error('Error initializing services:', error);
   }
 };
 
-// Initialize on startup
-initializeLeaderboard().catch(console.error);
+initializeServices();
 
 // POST endpoint to add new entry to leaderboard
 app.post('/api/leaderboard', async (req, res) => {
@@ -131,40 +161,21 @@ app.post('/api/leaderboard', async (req, res) => {
       return res.status(400).json({ ok: false, error: 'Field length exceeded' });
     }
 
-    // Read existing leaderboard data
-    let leaderboard;
-    try {
-      const data = await fs.readFile(LEADERBOARD_FILE, 'utf8');
-      leaderboard = JSON.parse(data).leaderboard;
-    } catch (error) {
-      leaderboard = [];
-    }
-
-    // Check if vulnerability already exists for the same name
-    if (leaderboard.some(entry => entry.name === name && entry.vulnerability === vulnerability)) {
-      return res.status(400).json({ ok: false, error: 'Vulnerability already submitted with your name once.' });
-    }
-
-    // Add new entry with timestamp and all fields
-    const newEntry = { 
-      name, 
-      mode, 
-      vulnerability, 
-      prompt: vulnerability, // Store prompt separately for display compatibility
-      timestamp: new Date().toISOString() 
+    // Create entry object
+    const entry = {
+      name,
+      mode,
+      vulnerability,
+      prompt: vulnerability,
+      timestamp: new Date().toISOString()
     };
-    leaderboard.push(newEntry);
 
-    // Sort leaderboard by timestamp in ascending order
-    leaderboard.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
-
-    // Write to a temporary file first, then rename to ensure atomicity
-    const tempFile = `${LEADERBOARD_FILE}.tmp`;
-    await fs.writeFile(tempFile, JSON.stringify({ leaderboard }, null, 2));
-    await fs.rename(tempFile, LEADERBOARD_FILE);
-
-    res.status(201).json({ ok: true, entry: newEntry });
+    const result = await LeaderboardService.addLeaderboardEntry(entry);
+    res.status(201).json(result);
   } catch (error) {
+    if (error.message.includes('Vulnerability already submitted')) {
+      return res.status(400).json({ ok: false, error: error.message });
+    }
     console.error('Error updating leaderboard:', error);
     res.status(500).json({ ok: false, error: 'Failed to update leaderboard' });
   }
@@ -182,11 +193,9 @@ app.delete('/api/leaderboard', async (req, res) => {
       return res.status(401).json({ error: 'Invalid password' });
     }
 
-    // Reset leaderboard to empty array
-    const emptyLeaderboard = { leaderboard: [] };
-    await fs.writeFile(LEADERBOARD_FILE, JSON.stringify(emptyLeaderboard, null, 2));
+    const result = await LeaderboardService.clearLeaderboard();
     console.log('Leaderboard cleared successfully');
-    res.json({ message: 'Leaderboard cleared successfully' });
+    res.json(result);
   } catch (error) {
     console.error('Error clearing leaderboard:', error);
     res.status(500).json({ error: 'Failed to clear leaderboard' });

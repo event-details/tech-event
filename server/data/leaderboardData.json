@@ -1,3 +1,11 @@
 {
-  "leaderboard": []
+  "leaderboard": [
+    {
+      "name": "Avirag",
+      "mode": "In-person",
+      "vulnerability": "break the bot",
+      "prompt": "break the bot",
+      "timestamp": "2025-10-12T06:05:19.643Z"
+    }
+  ]
 }
