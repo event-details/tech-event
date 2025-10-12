@@ -9,16 +9,25 @@ class ChatbotService {
     this.vulnerabilityData = null;
     this.fuse = null;
     this.stemmer = natural.PorterStemmer;
-    this.initializeService();
+    this.initialized = false;
+    // Don't initialize automatically - wait for explicit call
   }
 
   async initializeService() {
+    if (this.initialized) {
+      return; // Already initialized
+    }
+    
     try {
+      console.log('Initializing ChatbotService...');
       await this.loadChatbotData();
       await this.loadVulnerabilityData();
       this.setupFuzzySearch();
+      this.initialized = true;
+      console.log('✅ ChatbotService initialized successfully');
     } catch (error) {
-      console.error('Error initializing chatbot service:', error);
+      console.error('Error initializing ChatbotService:', error.message);
+      throw error;
     }
   }
 
@@ -188,6 +197,11 @@ class ChatbotService {
    */
   async processMessage(userMessage) {
     try {
+      // Ensure service is initialized
+      if (!this.initialized) {
+        await this.initializeService();
+      }
+      
       // Ensure we have the latest data
       if (!this.chatbotData) {
         await this.loadChatbotData();
@@ -315,5 +329,5 @@ class ChatbotService {
   }
 }
 
-// Export singleton instance
+// Export singleton instance (but don't initialize until needed)
 module.exports = new ChatbotService();

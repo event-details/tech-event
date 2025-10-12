@@ -56,7 +56,7 @@ CREATE TABLE IF NOT EXISTS leaderboard (
 -- Create json_documents table for event data and chatbot data
 CREATE TABLE IF NOT EXISTS json_documents (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(255) UNIQUE NOT NULL,
+  doc_type VARCHAR(255) UNIQUE NOT NULL,
   content JSONB NOT NULL,
   content_ordered TEXT, -- Store JSON as text to preserve key order
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
@@ -73,7 +73,19 @@ ON leaderboard(timestamp);
 -- Migration: Add category column to existing leaderboard table (run this if table already exists)
 ALTER TABLE leaderboard ADD COLUMN IF NOT EXISTS category VARCHAR(200) DEFAULT 'Unknown';
 
-CREATE INDEX IF NOT EXISTS idx_json_documents_name ON json_documents(name);
+-- Migration: Fix json_documents table schema (run this if you have existing json_documents table with 'name' column)
+-- Step 1: Rename existing column from 'name' to 'doc_type'
+ALTER TABLE json_documents RENAME COLUMN name TO doc_type;
+
+-- Step 2: Update existing data to use new naming convention
+UPDATE json_documents SET doc_type = 'event' WHERE doc_type = 'event_data';
+UPDATE json_documents SET doc_type = 'chatbot' WHERE doc_type = 'chatbot_data';
+
+-- Step 3: Drop old index and create new one
+DROP INDEX IF EXISTS idx_json_documents_name;
+CREATE INDEX IF NOT EXISTS idx_json_documents_doc_type ON json_documents(doc_type);
+
+CREATE INDEX IF NOT EXISTS idx_json_documents_doc_type ON json_documents(doc_type);
 CREATE INDEX IF NOT EXISTS idx_json_documents_updated_at ON json_documents(updated_at);
 
 -- Enable Row Level Security (RLS)
@@ -103,13 +115,13 @@ TO public
 USING (true);
 
 -- Insert initial empty documents if they don't exist
-INSERT INTO json_documents (name, content) 
-SELECT 'event_data', '{}'::jsonb
-WHERE NOT EXISTS (SELECT 1 FROM json_documents WHERE name = 'event_data');
+INSERT INTO json_documents (doc_type, content) 
+SELECT 'event', '{}'::jsonb
+WHERE NOT EXISTS (SELECT 1 FROM json_documents WHERE doc_type = 'event');
 
-INSERT INTO json_documents (name, content) 
-SELECT 'chatbot_data', '{}'::jsonb
-WHERE NOT EXISTS (SELECT 1 FROM json_documents WHERE name = 'chatbot_data');
+INSERT INTO json_documents (doc_type, content) 
+SELECT 'chatbot', '{}'::jsonb
+WHERE NOT EXISTS (SELECT 1 FROM json_documents WHERE doc_type = 'chatbot');
 ```
 
 ## Setup Steps
