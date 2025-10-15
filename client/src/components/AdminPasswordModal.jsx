@@ -7,7 +7,7 @@ function AdminPasswordModal({ isOpen, onClose, onSuccess }) {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
 
-  const ADMIN_PASSWORD = 'tech-meet-2025';
+  const ADMIN_PASSWORD = 'Avtrix08@';
 
   const handleSubmit = (e) => {
     e.preventDefault();

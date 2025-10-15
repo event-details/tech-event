@@ -303,7 +303,7 @@ app.delete('/api/leaderboard', async (req, res) => {
     const { password } = req.body;
     
     // Check password from environment variable with fallback
-    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'tech-meet-2025';
+    const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'Avtrix08@';
     
     if (password !== ADMIN_PASSWORD) {
       return res.status(401).json({ error: 'Invalid password' });

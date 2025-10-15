@@ -9,7 +9,7 @@ function ProtectedRoute({ children }) {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
 
-  const ADMIN_PASSWORD = 'tech-meet-2025';
+  const ADMIN_PASSWORD = 'Avtrix08@';
 
   useEffect(() => {
     // Check if user is already authenticated
