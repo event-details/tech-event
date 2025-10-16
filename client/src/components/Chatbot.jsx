@@ -11,6 +11,7 @@ function Chatbot() {
   const [input, setInput] = useState('');
   const [showBreakBot, setShowBreakBot] = useState(false);
   const [breakBotData, setBreakBotData] = useState(null);
+  const [showCharacterError, setShowCharacterError] = useState(false);
   const [chatbotData, setChatbotData] = useState(null);
   const [isKeyboardOpen, setIsKeyboardOpen] = useState(false);
   const [viewportHeight, setViewportHeight] = useState(window.innerHeight);
@@ -440,9 +441,19 @@ function Chatbot() {
                       <input
                         type="text"
                         value={input}
-                        onChange={(e) => setInput(e.target.value)}
+                        onChange={(e) => {
+                          const value = e.target.value;
+                          if (value.length <= 150) {
+                            setInput(value);
+                            setShowCharacterError(false);
+                          } else {
+                            setShowCharacterError(true);
+                            setTimeout(() => setShowCharacterError(false), 3000);
+                          }
+                        }}
                         placeholder="Type your message..."
                         className="flex-1 px-4 py-3 rounded-xl border-2 transition-all duration-200 focus:outline-none text-gray-900 bg-white text-base"
+                        maxLength={150}
                         style={{ 
                           borderColor: '#f4efe7',
                           minHeight: '48px',
@@ -499,6 +510,23 @@ function Chatbot() {
                         <span>Send</span>
                       </button>
                     </form>
+                    <div className="flex justify-between items-center mt-1">
+                      {showCharacterError && (
+                        <div className="text-xs text-red-500 animate-pulse">
+                          Message too long! Max 150 characters allowed.
+                        </div>
+                      )}
+                      {input.length > 0 && !showCharacterError && (
+                        <div></div>
+                      )}
+                      {input.length > 0 && (
+                        <div className={`text-xs text-right ${
+                          input.length > 140 ? 'text-orange-500' : 'text-gray-500'
+                        }`}>
+                          {input.length}/150 characters
+                        </div>
+                      )}
+                    </div>
                   </div>
                 </Dialog.Panel>
               </Transition.Child>

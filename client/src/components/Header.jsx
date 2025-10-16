@@ -108,7 +108,7 @@ function Header() {
               style={{ color: '#8f5a39' }}
               onClick={closeMenu}
             >
-              Tech Event
+              Bengaluru Tech Center
             </Link>
           </div>
 
